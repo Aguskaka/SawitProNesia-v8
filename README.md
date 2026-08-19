@@ -63,3 +63,7 @@ After Foundation PASS:
 7. Report
 8. Analytics/Budget
 9. Home finalization
+
+
+## v8.3
+Operational Aktivitas module added. See `docs/V8_3_AKTIVITAS.md`.

@@ -1,5 +1,5 @@
 {
-  "version": "8.1.0",
+  "version": "8.3.0",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -37,5 +37,12 @@
     "kalender",
     "laporan",
     "analytics"
-  ]
+  ],
+  "activity_module": true,
+  "activity_source_table": "operations",
+  "direct_activity_crud": true,
+  "program_linked_operations_read_only": true,
+  "operation_cost_centralized": true,
+  "panen_migration": false,
+  "fertilizer_program_migration": false
 }
