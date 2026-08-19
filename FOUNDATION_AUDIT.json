@@ -1,5 +1,5 @@
 {
-  "version": "8.5.0",
+  "version": "8.7.0",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -58,5 +58,12 @@
   "laporan_enabled": true,
   "laporan_uses_calculation_engine": true,
   "laporan_global_context": true,
-  "laporan_read_only": true
+  "laporan_read_only": true,
+  "planning_module": true,
+  "planning_crud": true,
+  "planning_progress_from_plan_id_only": true,
+  "planning_partial_actual": true,
+  "planning_direct_isolation": true,
+  "planning_delete_guard_when_actual_exists": true,
+  "planning_panen_routes_to_harvest_module": true
 }

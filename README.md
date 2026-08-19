@@ -71,3 +71,7 @@ Operational Aktivitas module added. See `docs/V8_3_AKTIVITAS.md`.
 
 ## v8.4
 Native Panen module with DIRECT + PLAN actual integrity. See `docs/V8_4_PANEN.md`.
+
+
+## v8.7
+Native Rencana/Planning with Plan→Actual cumulative progress and CRUD. See `docs/V8_7_RENCANA_PLANNING.md`.
