@@ -86,8 +86,7 @@ export default async function ActivitiesPage({
           <span>OPERASIONAL KEBUN</span>
           <h1>Aktivitas</h1>
           <p>
-            Catat actual operasional. Transaksi dari Rencana/Pemupukan tetap
-            dilindungi dan dikelola dari modul asalnya.
+            Catat actual operasional non-panen. Panen sekarang dikelola pada modul Panen agar Produksi, Pendapatan, dan Plan → Actual tetap terisolasi.
           </p>
         </div>
         <ContextSelector

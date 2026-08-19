@@ -67,3 +67,7 @@ After Foundation PASS:
 
 ## v8.3
 Operational Aktivitas module added. See `docs/V8_3_AKTIVITAS.md`.
+
+
+## v8.4
+Native Panen module with DIRECT + PLAN actual integrity. See `docs/V8_4_PANEN.md`.

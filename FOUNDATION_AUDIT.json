@@ -1,5 +1,5 @@
 {
-  "version": "8.3.0",
+  "version": "8.4.0",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -44,5 +44,12 @@
   "program_linked_operations_read_only": true,
   "operation_cost_centralized": true,
   "panen_migration": false,
-  "fertilizer_program_migration": false
+  "fertilizer_program_migration": false,
+  "harvest_module": true,
+  "harvest_direct_crud": true,
+  "harvest_plan_actual": true,
+  "harvest_plan_cumulative_progress": true,
+  "harvest_edit_is_update": true,
+  "harvest_delete_recalculates_derived_progress": true,
+  "direct_harvest_does_not_change_plan_progress": true
 }
