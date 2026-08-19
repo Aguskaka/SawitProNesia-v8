@@ -1,18 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ContextSelector } from "@/components/layout/context-selector";
 import { logout } from "@/app/(auth)/login/actions";
 
 export function DashboardShell({
   children,
-  estates,
-  selectedYear,
-  activeEstateId,
 }: {
   children: ReactNode;
-  estates: { id: string; name: string }[];
-  selectedYear: number;
-  activeEstateId: string | null;
 }) {
   return (
     <div className="appShell">
@@ -20,29 +13,26 @@ export function DashboardShell({
         <Link className="brand" href="/">
           <span className="brandIcon">🌴</span>
           <span>
-            <b>SawitProNesia</b>
-            <small>v8 Foundation</small>
+            <b><i>Sawit</i>ProNesia</b>
+            <small>Kelola Kebun, Maksimalkan Hasil</small>
           </span>
         </Link>
 
-        <ContextSelector
-          estates={estates}
-          selectedYear={selectedYear}
-          activeEstateId={activeEstateId}
-        />
-
-        <form action={logout}>
-          <button className="ghostButton" type="submit">Keluar</button>
-        </form>
+        <div className="topbarRight">
+          <span className="versionPill">v8.1</span>
+          <span className="cloudPill">● Cloud</span>
+          <form action={logout}>
+            <button className="accountButton" type="submit" title="Keluar">♙</button>
+          </form>
+        </div>
       </header>
 
       <nav className="mainNav">
-        <Link href="/">Home</Link>
-        <span className="disabledNav">Kebun</span>
-        <span className="disabledNav">Rencana</span>
-        <span className="disabledNav">Kalender</span>
-        <span className="disabledNav">Laporan</span>
-        <span className="disabledNav">Analytics</span>
+        <Link href="/">🏠 <span>Home</span></Link>
+        <span className="disabledNav">🌴 <span>Kebun</span></span>
+        <span className="disabledNav">＋ <span>Aktivitas</span></span>
+        <span className="disabledNav">📋 <span>Laporan</span></span>
+        <span className="disabledNav">📊 <span>Analytics</span></span>
       </nav>
 
       <main className="content">{children}</main>

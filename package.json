@@ -1,6 +1,6 @@
 {
   "name": "sawitpronesia-v8",
-  "version": "8.0.0-4",
+  "version": "8.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

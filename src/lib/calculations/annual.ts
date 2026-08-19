@@ -64,3 +64,36 @@ export function annualSummary(
     margin: revenue - cost,
   };
 }
+
+
+export function monthlyProductionSeries(
+  harvests: Harvest[],
+  estateId: string,
+  year: number,
+) {
+  const values = Array.from({ length: 12 }, () => 0);
+
+  harvests
+    .filter(
+      (h) =>
+        h.estate_id === estateId &&
+        transactionYear(h.harvest_date) === year,
+    )
+    .forEach((h) => {
+      const match = String(h.harvest_date ?? "").match(/^\d{4}-(\d{2})/);
+      const month = match ? Number(match[1]) - 1 : -1;
+      if (month >= 0 && month <= 11) {
+        values[month] += Number(h.weight_kg ?? 0);
+      }
+    });
+
+  return values;
+}
+
+export function costPerKg(productionKg: number, cost: number) {
+  return productionKg > 0 ? cost / productionKg : 0;
+}
+
+export function tonPerHa(productionKg: number, areaHa: number) {
+  return areaHa > 0 ? productionKg / 1000 / areaHa : 0;
+}

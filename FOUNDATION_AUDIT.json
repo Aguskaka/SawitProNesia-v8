@@ -1,5 +1,5 @@
 {
-  "version": "8.0.0.4",
+  "version": "8.1.0",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -24,5 +24,18 @@
   "first_login_session_fix": true,
   "login_revalidate_layout_before_redirect": true,
   "dashboard_force_dynamic": true,
-  "dashboard_revalidate_zero": true
+  "dashboard_revalidate_zero": true,
+  "home_dashboard_native": true,
+  "home_monthly_chart": true,
+  "home_owner_snapshot": true,
+  "home_recent_activity": true,
+  "home_context_selector_in_hero": true,
+  "modules_still_locked": [
+    "kebun",
+    "rencana",
+    "realisasi",
+    "kalender",
+    "laporan",
+    "analytics"
+  ]
 }

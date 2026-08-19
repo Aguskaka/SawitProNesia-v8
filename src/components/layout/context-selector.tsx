@@ -33,11 +33,11 @@ export function ContextSelector({
   }
 
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 9 }, (_, i) => currentYear - 3 + i);
+  const years = Array.from({ length: 10 }, (_, i) => currentYear - 3 + i);
 
   return (
-    <div className="contextSelector" aria-busy={pending}>
-      <label>
+    <div className={`heroContext ${pending ? "isPending" : ""}`}>
+      <label className="estateSelector">
         <span>Kebun Aktif</span>
         <select
           value={estateId}
@@ -55,7 +55,7 @@ export function ContextSelector({
         </select>
       </label>
 
-      <label>
+      <label className="yearSelector">
         <span>Tahun Global</span>
         <select
           value={year}
