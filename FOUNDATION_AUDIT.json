@@ -1,22 +1,20 @@
 {
-  "version": "8.0.0",
-  "native_nextjs": true,
-  "legacy_wrapper": false,
-  "schema_tables": 17,
-  "schema_columns": 169,
-  "foreign_keys": 28,
-  "sql_migration_required": false,
-  "phase0_snapshots_included": 7,
-  "files_expected": [
+  "version": "8.0.0.1",
+  "cloudflare_workers_ready": true,
+  "adapter": "@opennextjs/cloudflare",
+  "wrangler_config": true,
+  "nodejs_compat": true,
+  "open_next_config": true,
+  "supabase_sql_change_required": false,
+  "changed_files": [
     "package.json",
-    "tsconfig.json",
     "next.config.ts",
-    "src/app/layout.tsx",
-    "src/app/(dashboard)/page.tsx",
-    "src/app/(auth)/login/page.tsx",
-    "src/lib/supabase/client.ts",
-    "src/lib/supabase/server.ts",
-    "src/proxy.ts",
-    "src/types/database.ts"
+    ".gitignore"
+  ],
+  "new_files": [
+    "open-next.config.ts",
+    "wrangler.jsonc",
+    "public/_headers",
+    "docs/CLOUDFLARE_DEPLOY.md"
   ]
 }
