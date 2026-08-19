@@ -19,7 +19,7 @@ export function DashboardShell({
         </Link>
 
         <div className="topbarRight">
-          <span className="versionPill">v8.4</span>
+          <span className="versionPill">v8.4.1</span>
           <span className="cloudPill">● Cloud</span>
           <form action={logout}>
             <button className="accountButton" type="submit" title="Keluar">♙</button>

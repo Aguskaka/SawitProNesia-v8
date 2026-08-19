@@ -36,7 +36,6 @@ export default async function HarvestPage({
 }: {
   searchParams: Promise<{
     source?: string;
-    plan?: string;
     status?: string;
   }>;
 }) {
@@ -104,8 +103,6 @@ export default async function HarvestPage({
   );
   const averageBjr = calculateBjr(production, bunches);
 
-  const selectedPlan =
-    panenPlans.find((plan) => plan.id === params.plan) ?? null;
 
   return (
     <div className="harvestPage">
@@ -162,7 +159,7 @@ export default async function HarvestPage({
         <aside className="harvestComposer">
           <div className="activitySectionTitle">
             <span>＋ ACTUAL PANEN</span>
-            <h2>{selectedPlan ? "Realisasi Rencana" : "Catat Panen"}</h2>
+            <h2>Catat Panen Direct</h2>
           </div>
 
           {activeEstate && activeBlocks.length ? (
@@ -170,38 +167,22 @@ export default async function HarvestPage({
               <input type="hidden" name="estate_id" value={activeEstate.id} />
               <input type="hidden" name="selected_year" value={context.selectedYear} />
 
-              <label>
-                Sumber Actual
-                <select
-                  name="source"
-                  defaultValue={selectedPlan ? "PLAN" : "DIRECT"}
-                >
-                  <option value="DIRECT">DIRECT / tanpa rencana</option>
-                  <option value="PLAN">DARI RENCANA PANEN</option>
-                </select>
-              </label>
+              <input type="hidden" name="source" value="DIRECT" />
+              <input type="hidden" name="plan_id" value="" />
 
-              <label>
-                Rencana Panen
-                <select name="plan_id" defaultValue={selectedPlan?.id ?? ""}>
-                  <option value="">-- pilih jika sumber PLAN --</option>
-                  {panenPlans.map((plan) => {
-                    const block = blocks.find((b) => b.id === plan.block_id);
-                    const progress = getHarvestPlanProgress(plan, allHarvests);
-                    return (
-                      <option value={plan.id} key={plan.id}>
-                        {idDate(plan.planned_date)} · {block?.name ?? "Seluruh Kebun"} · sisa {formatNumber(progress.remainingKg, 0)} Kg
-                      </option>
-                    );
-                  })}
-                </select>
-              </label>
+              <div className="harvestFormula fullField">
+                <b>DIRECT / tanpa rencana</b>
+                <span>
+                  Untuk actual yang berasal dari Rencana Panen, gunakan tombol
+                  “Realisasikan” pada kartu Progress Rencana Panen di bawah.
+                </span>
+              </div>
 
               <label>
                 Blok
                 <select
                   name="block_id"
-                  defaultValue={selectedPlan?.block_id ?? activeBlocks[0]?.id ?? ""}
+                  defaultValue={activeBlocks[0]?.id ?? ""}
                   required
                 >
                   {activeBlocks.map((block) => (
@@ -401,7 +382,7 @@ export default async function HarvestPage({
                 <div className="planCardActions">
                   <span>{plan.note || "Rencana Panen"}</span>
                   {progress.status !== "Selesai" ? (
-                    <Link href={`/panen?plan=${plan.id}`}>Realisasikan →</Link>
+                    <Link href={`/panen/realisasi/${plan.id}`}>Realisasikan →</Link>
                   ) : (
                     <b>Selesai</b>
                   )}
