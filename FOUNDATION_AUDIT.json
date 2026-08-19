@@ -1,5 +1,5 @@
 {
-  "version": "8.4.1",
+  "version": "8.5.0",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -54,5 +54,9 @@
   "direct_harvest_does_not_change_plan_progress": true,
   "harvest_plan_realization_dedicated_route": true,
   "harvest_plan_query_param_flow_removed": true,
-  "generic_harvest_form_direct_only": true
+  "generic_harvest_form_direct_only": true,
+  "laporan_enabled": true,
+  "laporan_uses_calculation_engine": true,
+  "laporan_global_context": true,
+  "laporan_read_only": true
 }

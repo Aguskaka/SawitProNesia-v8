@@ -19,7 +19,7 @@ export function DashboardShell({
         </Link>
 
         <div className="topbarRight">
-          <span className="versionPill">v8.4.1</span>
+          <span className="versionPill">v8.5</span>
           <span className="cloudPill">● Cloud</span>
           <form action={logout}>
             <button className="accountButton" type="submit" title="Keluar">♙</button>
@@ -32,7 +32,7 @@ export function DashboardShell({
         <Link href="/kebun">🌴 <span>Kebun</span></Link>
         <Link href="/aktivitas">＋ <span>Aktivitas</span></Link>
         <Link href="/panen">🌾 <span>Panen</span></Link>
-        <span className="disabledNav">📋 <span>Laporan</span></span>
+        <Link href="/laporan">📋 <span>Laporan</span></Link>
         <span className="disabledNav">📊 <span>Analytics</span></span>
       </nav>
 
