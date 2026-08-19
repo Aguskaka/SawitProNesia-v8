@@ -1,5 +1,5 @@
 {
-  "version": "8.8.0",
+  "version": "9.0.0",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -81,5 +81,26 @@
     "Selesai"
   ],
   "calendar_click_to_plan_detail": true,
-  "external_notifications": false
+  "external_notifications": false,
+  "complete_functional_build": true,
+  "modules": {
+    "home": true,
+    "estates_blocks": true,
+    "activities": true,
+    "harvest": true,
+    "planning": true,
+    "calendar": true,
+    "fertilizer": true,
+    "workforce": true,
+    "budgets": true,
+    "reports": true,
+    "analytics": true
+  },
+  "fertilizer_structured_programs": true,
+  "fertilizer_partial_execution": true,
+  "budget_annual_category_block": true,
+  "workforce_hok_cost": true,
+  "dashboard_error_boundary": true,
+  "dashboard_loading_state": true,
+  "ui_final_polish_deferred_to": "v9.1"
 }

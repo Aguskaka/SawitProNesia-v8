@@ -20,14 +20,15 @@ export default async function ReportPage() {
   const supabase = await createClient();
   const context = await getAppContext();
 
-  const [estateResult, blockResult, harvestResult, operationResult] = await Promise.all([
+  const [estateResult, blockResult, harvestResult, operationResult, budgetResult] = await Promise.all([
     supabase.from("estates").select("*").order("created_at"),
     supabase.from("blocks").select("*").order("name"),
     supabase.from("harvests").select("*"),
     supabase.from("operations").select("*"),
+    supabase.from("annual_budgets").select("*"),
   ]);
 
-  for (const result of [estateResult, blockResult, harvestResult, operationResult]) {
+  for (const result of [estateResult, blockResult, harvestResult, operationResult, budgetResult]) {
     if (result.error) throw new Error(result.error.message);
   }
 
@@ -35,6 +36,7 @@ export default async function ReportPage() {
   const blocks = blockResult.data ?? [];
   const harvests = harvestResult.data ?? [];
   const operations = operationResult.data ?? [];
+  const annualBudgets = budgetResult.data ?? [];
   const activeEstate = estates.find((estate) => estate.id === context.activeEstateId) ?? estates[0] ?? null;
 
   if (!activeEstate) {
@@ -52,6 +54,8 @@ export default async function ReportPage() {
   const productivity = tonPerHa(summary.productionKg, area);
   const efficiency = costPerKg(summary.productionKg, summary.cost);
   const marginPct = summary.revenue > 0 ? summary.margin / summary.revenue * 100 : 0;
+  const annualBudget = Number(annualBudgets.find((b) => b.estate_id === activeEstate.id && b.budget_year === context.selectedYear)?.amount ?? 0);
+  const budgetUsedPct = annualBudget > 0 ? summary.cost / annualBudget * 100 : 0;
   const maxMonthly = Math.max(...monthly.flatMap((m) => [m.revenue, m.cost]), 1);
 
   const blockRows = estateBlocks.map((block) => {
@@ -87,7 +91,7 @@ export default async function ReportPage() {
         <article><small>Produksi</small><strong>{formatNumber(summary.productionKg)} Kg</strong><span>{productivity.toLocaleString("id-ID", { maximumFractionDigits: 2 })} ton/Ha</span></article>
         <article><small>Pendapatan</small><strong>{formatCompactRupiah(summary.revenue)}</strong><span>{formatRupiah(summary.revenue)}</span></article>
         <article><small>Biaya Aktual</small><strong>{formatCompactRupiah(summary.cost)}</strong><span>{formatRupiah(efficiency)}/Kg</span></article>
-        <article className={summary.margin >= 0 ? "reportPositive" : "reportNegative"}><small>Margin</small><strong>{formatCompactRupiah(summary.margin)}</strong><span>{marginPct.toLocaleString("id-ID", { maximumFractionDigits: 1 })}%</span></article>
+        <article className={summary.margin >= 0 ? "reportPositive" : "reportNegative"}><small>Margin</small><strong>{formatCompactRupiah(summary.margin)}</strong><span>{marginPct.toLocaleString("id-ID", { maximumFractionDigits: 1 })}%</span></article><article><small>Budget</small><strong>{formatCompactRupiah(annualBudget)}</strong><span>{budgetUsedPct.toLocaleString("id-ID", { maximumFractionDigits: 1 })}% terpakai</span></article>
       </section>
 
       <section className="reportGrid">

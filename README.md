@@ -79,3 +79,7 @@ Native Rencana/Planning with Plan→Actual cumulative progress and CRUD. See `do
 
 ## v8.8
 Native Kalender Kebun + in-app Reminder from existing Plans. See `docs/V8_8_KALENDER_REMINDER.md`.
+
+
+## v9.0
+Complete Functional Build: fertilizer programs, workforce/HOK, budgets, reliability hardening, and all previous modules retained. See `docs/V9_0_COMPLETE_FUNCTIONAL_BUILD.md`.
