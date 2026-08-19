@@ -1,5 +1,5 @@
 {
-  "version": "8.0.0.1",
+  "version": "8.0.0.2",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -15,6 +15,11 @@
     "open-next.config.ts",
     "wrangler.jsonc",
     "public/_headers",
-    "docs/CLOUDFLARE_DEPLOY.md"
+    "docs/CLOUDFLARE_DEPLOY.md",
+    "src/middleware.ts"
+  ],
+  "cloudflare_middleware_fix": true,
+  "removed_files": [
+    "src/proxy.ts"
   ]
 }
