@@ -1,5 +1,5 @@
 {
-  "version": "8.7.0",
+  "version": "8.8.0",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -65,5 +65,21 @@
   "planning_partial_actual": true,
   "planning_direct_isolation": true,
   "planning_delete_guard_when_actual_exists": true,
-  "planning_panen_routes_to_harvest_module": true
+  "planning_panen_routes_to_harvest_module": true,
+  "calendar_module": true,
+  "calendar_source": "plans",
+  "calendar_global_year": true,
+  "calendar_active_estate": true,
+  "calendar_month_navigation": true,
+  "calendar_in_app_reminder": true,
+  "calendar_plan_status": [
+    "Terjadwal",
+    "Reminder",
+    "Hari Ini",
+    "Sebagian",
+    "Terlambat",
+    "Selesai"
+  ],
+  "calendar_click_to_plan_detail": true,
+  "external_notifications": false
 }

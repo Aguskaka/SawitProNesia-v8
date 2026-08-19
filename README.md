@@ -75,3 +75,7 @@ Native Panen module with DIRECT + PLAN actual integrity. See `docs/V8_4_PANEN.md
 
 ## v8.7
 Native Rencana/Planning with Plan→Actual cumulative progress and CRUD. See `docs/V8_7_RENCANA_PLANNING.md`.
+
+
+## v8.8
+Native Kalender Kebun + in-app Reminder from existing Plans. See `docs/V8_8_KALENDER_REMINDER.md`.
