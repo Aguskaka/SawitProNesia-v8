@@ -1,0 +1,139 @@
+schemaname,tablename,policyname,permissive,roles,cmd,qual,with_check
+public,activities,activities_insert_access,PERMISSIVE,{authenticated},INSERT,null,"((created_by = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = activities.estate_id) AND ((e.owner_id = auth.uid()) OR (EXISTS ( SELECT 1
+           FROM estate_members em
+          WHERE ((em.estate_id = e.id) AND (em.user_id = auth.uid())))))))))"
+public,activities,activities_select_access,PERMISSIVE,{authenticated},SELECT,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = activities.estate_id) AND ((e.owner_id = auth.uid()) OR (EXISTS ( SELECT 1
+           FROM estate_members em
+          WHERE ((em.estate_id = e.id) AND (em.user_id = auth.uid()))))))))",null
+public,annual_block_budgets,annual_block_budgets_delete_own,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,annual_block_budgets,annual_block_budgets_insert_own,PERMISSIVE,{authenticated},INSERT,null,"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM (blocks b
+     JOIN estates e ON ((e.id = b.estate_id)))
+  WHERE ((b.id = annual_block_budgets.block_id) AND (b.estate_id = b.estate_id) AND (e.owner_id = auth.uid())))))"
+public,annual_block_budgets,annual_block_budgets_select_own,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,annual_block_budgets,annual_block_budgets_update_own,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM (blocks b
+     JOIN estates e ON ((e.id = b.estate_id)))
+  WHERE ((b.id = annual_block_budgets.block_id) AND (b.estate_id = b.estate_id) AND (e.owner_id = auth.uid())))))"
+public,annual_budget_categories,annual_budget_categories_delete_own,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,annual_budget_categories,annual_budget_categories_insert_own,PERMISSIVE,{authenticated},INSERT,null,"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = annual_budget_categories.estate_id) AND (e.owner_id = auth.uid())))))"
+public,annual_budget_categories,annual_budget_categories_select_own,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,annual_budget_categories,annual_budget_categories_update_own,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = annual_budget_categories.estate_id) AND (e.owner_id = auth.uid())))))"
+public,annual_budgets,annual_budgets_delete_own,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,annual_budgets,annual_budgets_insert_own,PERMISSIVE,{authenticated},INSERT,null,"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = annual_budgets.estate_id) AND (e.owner_id = auth.uid())))))"
+public,annual_budgets,annual_budgets_select_own,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,annual_budgets,annual_budgets_update_own,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = annual_budgets.estate_id) AND (e.owner_id = auth.uid())))))"
+public,blocks,blocks_delete_owner,PERMISSIVE,{authenticated},DELETE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = blocks.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,blocks,blocks_insert_owner,PERMISSIVE,{authenticated},INSERT,null,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = blocks.estate_id) AND (e.owner_id = auth.uid()))))"
+public,blocks,blocks_select_owner,PERMISSIVE,{authenticated},SELECT,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = blocks.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,blocks,blocks_update_owner,PERMISSIVE,{authenticated},UPDATE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = blocks.estate_id) AND (e.owner_id = auth.uid()))))","(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = blocks.estate_id) AND (e.owner_id = auth.uid()))))"
+public,estate_members,members_select_own,PERMISSIVE,{authenticated},SELECT,(user_id = auth.uid()),null
+public,estates,estates_delete_owner,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,estates,estates_insert_owner,PERMISSIVE,{authenticated},INSERT,null,(owner_id = auth.uid())
+public,estates,estates_select_owner,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,estates,estates_update_owner,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),(owner_id = auth.uid())
+public,fertilizer_execution_items,fert_exec_item_delete_own,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,fertilizer_execution_items,fert_exec_item_insert_own,PERMISSIVE,{authenticated},INSERT,null,"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM fertilizer_executions e
+  WHERE ((e.id = fertilizer_execution_items.execution_id) AND (e.owner_id = auth.uid())))))"
+public,fertilizer_execution_items,fert_exec_item_select_own,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,fertilizer_execution_items,fert_exec_item_update_own,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),(owner_id = auth.uid())
+public,fertilizer_executions,fert_exec_delete_own,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,fertilizer_executions,fert_exec_insert_own,PERMISSIVE,{authenticated},INSERT,null,"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM fertilizer_programs p
+  WHERE ((p.id = fertilizer_executions.program_id) AND (p.owner_id = auth.uid())))))"
+public,fertilizer_executions,fert_exec_select_own,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,fertilizer_executions,fert_exec_update_own,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),(owner_id = auth.uid())
+public,fertilizer_program_items,fert_item_delete_own,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,fertilizer_program_items,fert_item_insert_own,PERMISSIVE,{authenticated},INSERT,null,"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM fertilizer_programs p
+  WHERE ((p.id = fertilizer_program_items.program_id) AND (p.owner_id = auth.uid())))))"
+public,fertilizer_program_items,fert_item_select_own,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,fertilizer_program_items,fert_item_update_own,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),(owner_id = auth.uid())
+public,fertilizer_programs,fert_program_delete_own,PERMISSIVE,{authenticated},DELETE,(owner_id = auth.uid()),null
+public,fertilizer_programs,fert_program_insert_own,PERMISSIVE,{authenticated},INSERT,null,"((owner_id = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = fertilizer_programs.estate_id) AND (e.owner_id = auth.uid())))))"
+public,fertilizer_programs,fert_program_select_own,PERMISSIVE,{authenticated},SELECT,(owner_id = auth.uid()),null
+public,fertilizer_programs,fert_program_update_own,PERMISSIVE,{authenticated},UPDATE,(owner_id = auth.uid()),(owner_id = auth.uid())
+public,harvests,harvests_delete_owner,PERMISSIVE,{authenticated},DELETE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = harvests.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,harvests,harvests_insert_owner,PERMISSIVE,{authenticated},INSERT,null,"((created_by = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = harvests.estate_id) AND (e.owner_id = auth.uid())))) AND (EXISTS ( SELECT 1
+   FROM blocks b
+  WHERE ((b.id = harvests.block_id) AND (b.estate_id = harvests.estate_id)))))"
+public,harvests,harvests_select_owner,PERMISSIVE,{authenticated},SELECT,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = harvests.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,harvests,harvests_update_owner,PERMISSIVE,{authenticated},UPDATE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = harvests.estate_id) AND (e.owner_id = auth.uid()))))","(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = harvests.estate_id) AND (e.owner_id = auth.uid()))))"
+public,operations,operations_delete_owner,PERMISSIVE,{authenticated},DELETE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = operations.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,operations,operations_insert_owner,PERMISSIVE,{authenticated},INSERT,null,"((created_by = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = operations.estate_id) AND (e.owner_id = auth.uid())))))"
+public,operations,operations_select_owner,PERMISSIVE,{authenticated},SELECT,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = operations.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,operations,operations_update_owner,PERMISSIVE,{authenticated},UPDATE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = operations.estate_id) AND (e.owner_id = auth.uid()))))","(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = operations.estate_id) AND (e.owner_id = auth.uid()))))"
+public,plans,plans_delete_owner,PERMISSIVE,{authenticated},DELETE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = plans.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,plans,plans_insert_owner,PERMISSIVE,{authenticated},INSERT,null,"((created_by = auth.uid()) AND (EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = plans.estate_id) AND (e.owner_id = auth.uid())))))"
+public,plans,plans_select_owner,PERMISSIVE,{authenticated},SELECT,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = plans.estate_id) AND (e.owner_id = auth.uid()))))",null
+public,plans,plans_update_owner,PERMISSIVE,{authenticated},UPDATE,"(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = plans.estate_id) AND (e.owner_id = auth.uid()))))","(EXISTS ( SELECT 1
+   FROM estates e
+  WHERE ((e.id = plans.estate_id) AND (e.owner_id = auth.uid()))))"
+public,profiles,profiles_select_own,PERMISSIVE,{authenticated},SELECT,(id = auth.uid()),null
+public,profiles,profiles_update_own,PERMISSIVE,{authenticated},UPDATE,(id = auth.uid()),(id = auth.uid())
+public,workspace_members,members_insert_owner,PERMISSIVE,{authenticated},INSERT,null,"((user_id = auth.uid()) OR (EXISTS ( SELECT 1
+   FROM workspace_members me
+  WHERE ((me.workspace_id = workspace_members.workspace_id) AND (me.user_id = auth.uid()) AND (me.role = 'owner'::text) AND (me.status = 'active'::text)))))"
+public,workspace_members,members_select_same_workspace,PERMISSIVE,{authenticated},SELECT,"((user_id = auth.uid()) OR (EXISTS ( SELECT 1
+   FROM workspace_members me
+  WHERE ((me.workspace_id = workspace_members.workspace_id) AND (me.user_id = auth.uid()) AND (me.status = 'active'::text)))))",null
+public,workspace_members,members_update_owner,PERMISSIVE,{authenticated},UPDATE,"(EXISTS ( SELECT 1
+   FROM workspace_members me
+  WHERE ((me.workspace_id = workspace_members.workspace_id) AND (me.user_id = auth.uid()) AND (me.role = 'owner'::text) AND (me.status = 'active'::text))))",null
+public,workspaces,workspace_insert_self,PERMISSIVE,{authenticated},INSERT,null,(created_by = auth.uid())
+public,workspaces,workspace_select_member,PERMISSIVE,{authenticated},SELECT,"((created_by = auth.uid()) OR (EXISTS ( SELECT 1
+   FROM workspace_members wm
+  WHERE ((wm.workspace_id = workspaces.id) AND (wm.user_id = auth.uid()) AND (wm.status = 'active'::text)))))",null

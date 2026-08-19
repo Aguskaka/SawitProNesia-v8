@@ -1,0 +1,22 @@
+{
+  "version": "8.0.0",
+  "native_nextjs": true,
+  "legacy_wrapper": false,
+  "schema_tables": 17,
+  "schema_columns": 169,
+  "foreign_keys": 28,
+  "sql_migration_required": false,
+  "phase0_snapshots_included": 7,
+  "files_expected": [
+    "package.json",
+    "tsconfig.json",
+    "next.config.ts",
+    "src/app/layout.tsx",
+    "src/app/(dashboard)/page.tsx",
+    "src/app/(auth)/login/page.tsx",
+    "src/lib/supabase/client.ts",
+    "src/lib/supabase/server.ts",
+    "src/proxy.ts",
+    "src/types/database.ts"
+  ]
+}

@@ -1,0 +1,170 @@
+table_schema,table_name,column_name,data_type,is_nullable,column_default
+public,activities,id,uuid,NO,gen_random_uuid()
+public,activities,estate_id,uuid,NO,null
+public,activities,created_by,uuid,NO,null
+public,activities,type,text,NO,null
+public,activities,note,text,NO,null
+public,activities,value,text,YES,null
+public,activities,activity_date,timestamp with time zone,NO,now()
+public,activities,block_id,uuid,YES,null
+public,annual_block_budgets,id,uuid,NO,gen_random_uuid()
+public,annual_block_budgets,owner_id,uuid,NO,null
+public,annual_block_budgets,estate_id,uuid,NO,null
+public,annual_block_budgets,block_id,uuid,NO,null
+public,annual_block_budgets,budget_year,integer,NO,null
+public,annual_block_budgets,category,text,NO,null
+public,annual_block_budgets,amount,numeric,NO,0
+public,annual_block_budgets,created_at,timestamp with time zone,NO,now()
+public,annual_block_budgets,updated_at,timestamp with time zone,NO,now()
+public,annual_budget_categories,id,uuid,NO,gen_random_uuid()
+public,annual_budget_categories,owner_id,uuid,NO,null
+public,annual_budget_categories,estate_id,uuid,NO,null
+public,annual_budget_categories,budget_year,integer,NO,null
+public,annual_budget_categories,category,text,NO,null
+public,annual_budget_categories,amount,numeric,NO,0
+public,annual_budget_categories,created_at,timestamp with time zone,NO,now()
+public,annual_budget_categories,updated_at,timestamp with time zone,NO,now()
+public,annual_budgets,id,uuid,NO,gen_random_uuid()
+public,annual_budgets,owner_id,uuid,NO,null
+public,annual_budgets,estate_id,uuid,NO,null
+public,annual_budgets,budget_year,integer,NO,null
+public,annual_budgets,amount,numeric,NO,0
+public,annual_budgets,created_at,timestamp with time zone,NO,now()
+public,annual_budgets,updated_at,timestamp with time zone,NO,now()
+public,blocks,id,uuid,NO,gen_random_uuid()
+public,blocks,estate_id,uuid,NO,null
+public,blocks,name,text,NO,null
+public,blocks,area,numeric,NO,0
+public,blocks,trees,integer,NO,0
+public,blocks,planting_year,integer,YES,null
+public,blocks,variety,text,YES,null
+public,blocks,status,text,NO,'Aktif'::text
+public,blocks,created_at,timestamp with time zone,NO,now()
+public,blocks,planting_date,date,YES,null
+public,blocks,soil_type,text,YES,'mineral'::text
+public,blocks,fertilizer_pattern,text,YES,'tunggal'::text
+public,estate_members,estate_id,uuid,NO,null
+public,estate_members,user_id,uuid,NO,null
+public,estate_members,role,text,NO,'mandor'::text
+public,estates,id,uuid,NO,gen_random_uuid()
+public,estates,owner_id,uuid,NO,null
+public,estates,name,text,NO,null
+public,estates,area,numeric,NO,0
+public,estates,trees,integer,NO,0
+public,estates,prod,numeric,NO,0
+public,estates,revenue,numeric,NO,0
+public,estates,cost,numeric,NO,0
+public,estates,history,jsonb,NO,"'[0, 0, 0, 0, 0, 0]'::jsonb"
+public,estates,created_at,timestamp with time zone,NO,now()
+public,estates,latitude,double precision,YES,null
+public,estates,longitude,double precision,YES,null
+public,fertilizer_execution_items,id,uuid,NO,gen_random_uuid()
+public,fertilizer_execution_items,owner_id,uuid,NO,null
+public,fertilizer_execution_items,execution_id,uuid,NO,null
+public,fertilizer_execution_items,program_item_id,uuid,NO,null
+public,fertilizer_execution_items,operation_id,uuid,YES,null
+public,fertilizer_execution_items,actual_quantity_kg,numeric,NO,0
+public,fertilizer_execution_items,actual_unit_price,numeric,NO,0
+public,fertilizer_execution_items,actual_cost,numeric,NO,0
+public,fertilizer_execution_items,actual_dose_per_tree,numeric,NO,0
+public,fertilizer_execution_items,created_at,timestamp with time zone,NO,now()
+public,fertilizer_executions,id,uuid,NO,gen_random_uuid()
+public,fertilizer_executions,owner_id,uuid,NO,null
+public,fertilizer_executions,program_id,uuid,NO,null
+public,fertilizer_executions,estate_id,uuid,NO,null
+public,fertilizer_executions,block_id,uuid,NO,null
+public,fertilizer_executions,execution_date,date,NO,null
+public,fertilizer_executions,worker,text,YES,null
+public,fertilizer_executions,note,text,YES,null
+public,fertilizer_executions,created_at,timestamp with time zone,NO,now()
+public,fertilizer_program_items,id,uuid,NO,gen_random_uuid()
+public,fertilizer_program_items,owner_id,uuid,NO,null
+public,fertilizer_program_items,program_id,uuid,NO,null
+public,fertilizer_program_items,fertilizer_name,text,NO,null
+public,fertilizer_program_items,standard_dose,numeric,NO,0
+public,fertilizer_program_items,custom_dose,numeric,NO,0
+public,fertilizer_program_items,dose_unit,text,NO,null
+public,fertilizer_program_items,requirement_kg,numeric,NO,0
+public,fertilizer_program_items,unit_price,numeric,NO,0
+public,fertilizer_program_items,estimated_cost,numeric,NO,0
+public,fertilizer_program_items,sort_order,integer,NO,0
+public,fertilizer_program_items,created_at,timestamp with time zone,NO,now()
+public,fertilizer_programs,id,uuid,NO,gen_random_uuid()
+public,fertilizer_programs,owner_id,uuid,NO,null
+public,fertilizer_programs,estate_id,uuid,NO,null
+public,fertilizer_programs,block_id,uuid,NO,null
+public,fertilizer_programs,pattern,text,NO,null
+public,fertilizer_programs,planned_date,date,NO,null
+public,fertilizer_programs,period_label,text,YES,null
+public,fertilizer_programs,recommendation_source,text,YES,null
+public,fertilizer_programs,status,text,NO,'Terjadwal'::text
+public,fertilizer_programs,note,text,YES,null
+public,fertilizer_programs,completed_at,timestamp with time zone,YES,null
+public,fertilizer_programs,created_at,timestamp with time zone,NO,now()
+public,fertilizer_programs,updated_at,timestamp with time zone,YES,null
+public,fertilizer_programs,planning_mode,text,NO,'auto'::text
+public,fertilizer_programs,target_age_months,integer,YES,null
+public,harvests,id,uuid,NO,gen_random_uuid()
+public,harvests,estate_id,uuid,NO,null
+public,harvests,block_id,uuid,NO,null
+public,harvests,created_by,uuid,NO,null
+public,harvests,harvest_date,date,NO,CURRENT_DATE
+public,harvests,weight_kg,numeric,NO,null
+public,harvests,bunches,integer,NO,0
+public,harvests,price_per_kg,numeric,NO,0
+public,harvests,revenue,numeric,NO,0
+public,harvests,worker,text,YES,null
+public,harvests,note,text,YES,null
+public,harvests,created_at,timestamp with time zone,NO,now()
+public,harvests,updated_at,timestamp with time zone,YES,null
+public,harvests,plan_id,uuid,YES,null
+public,harvests,source,text,NO,'DIRECT'::text
+public,operations,id,uuid,NO,gen_random_uuid()
+public,operations,estate_id,uuid,NO,null
+public,operations,block_id,uuid,YES,null
+public,operations,created_by,uuid,NO,null
+public,operations,type,text,NO,null
+public,operations,op_date,date,NO,CURRENT_DATE
+public,operations,description,text,NO,null
+public,operations,quantity,numeric,NO,0
+public,operations,unit,text,YES,null
+public,operations,unit_price,numeric,NO,0
+public,operations,labor_days,numeric,NO,0
+public,operations,labor_rate,numeric,NO,0
+public,operations,worker,text,YES,null
+public,operations,total_cost,numeric,NO,0
+public,operations,note,text,YES,null
+public,operations,created_at,timestamp with time zone,NO,now()
+public,operations,dose_per_tree,numeric,NO,0
+public,operations,updated_at,timestamp with time zone,YES,null
+public,operations,plan_id,uuid,YES,null
+public,operations,fertilizer_program_id,uuid,YES,null
+public,operations,source,text,NO,'DIRECT'::text
+public,plans,id,uuid,NO,gen_random_uuid()
+public,plans,estate_id,uuid,NO,null
+public,plans,block_id,uuid,YES,null
+public,plans,created_by,uuid,NO,null
+public,plans,type,text,NO,null
+public,plans,planned_date,date,NO,null
+public,plans,target_quantity,numeric,NO,0
+public,plans,unit,text,YES,null
+public,plans,note,text,YES,null
+public,plans,created_at,timestamp with time zone,NO,now()
+public,plans,updated_at,timestamp with time zone,YES,null
+public,plans,reminder_days,integer,NO,3
+public,profiles,id,uuid,NO,null
+public,profiles,full_name,text,YES,null
+public,profiles,role,text,NO,'owner'::text
+public,profiles,created_at,timestamp with time zone,NO,now()
+public,workspace_members,id,uuid,NO,gen_random_uuid()
+public,workspace_members,workspace_id,uuid,NO,null
+public,workspace_members,user_id,uuid,NO,null
+public,workspace_members,email,text,NO,null
+public,workspace_members,role,text,NO,null
+public,workspace_members,estate_id,uuid,YES,null
+public,workspace_members,status,text,NO,'active'::text
+public,workspace_members,created_at,timestamp with time zone,NO,now()
+public,workspaces,id,uuid,NO,gen_random_uuid()
+public,workspaces,name,text,NO,null
+public,workspaces,created_by,uuid,NO,null
+public,workspaces,created_at,timestamp with time zone,NO,now()
