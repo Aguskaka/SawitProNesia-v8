@@ -1,5 +1,5 @@
 {
-  "version": "8.0.0.3",
+  "version": "8.0.0.4",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -20,5 +20,9 @@
   "cloudflare_no_middleware_foundation": true,
   "middleware_entrypoint": false,
   "supabase_auth_mode": "server-action login/logout + server-component getUser",
-  "reference_scan_updateSession": []
+  "reference_scan_updateSession": [],
+  "first_login_session_fix": true,
+  "login_revalidate_layout_before_redirect": true,
+  "dashboard_force_dynamic": true,
+  "dashboard_revalidate_zero": true
 }

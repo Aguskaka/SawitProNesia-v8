@@ -20,7 +20,7 @@ export async function createClient() {
             );
           } catch {
             // Server Components cannot always write cookies.
-            // Session refresh is handled by src/proxy.ts.
+            // Cookie writes can fail inside Server Components; auth mutations happen in Server Actions.
           }
         },
       },
