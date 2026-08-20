@@ -2,46 +2,26 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { logout } from "@/app/(auth)/login/actions";
 
-export function DashboardShell({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <div className="appShell">
-      <header className="topbar">
-        <Link className="brand" href="/">
-          <span className="brandIcon">🌴</span>
-          <span>
-            <b><i>Sawit</i>ProNesia</b>
-            <small>Kelola Kebun, Maksimalkan Hasil</small>
-          </span>
-        </Link>
+const nav = [
+  ["/", "⌂", "Beranda"], ["/kebun", "♧", "Kebun"], ["/aktivitas", "↗", "Aktivitas"],
+  ["/pupuk", "♨", "Pupuk"], ["/tenaga-kerja", "♙", "Tenaga Kerja"], ["/panen", "◉", "Panen"],
+  ["/rencana", "▣", "Rencana"], ["/kalender", "□", "Kalender"], ["/anggaran", "◈", "Anggaran"],
+  ["/laporan", "▤", "Laporan"], ["/analytics", "⌁", "Analytics"],
+] as const;
 
-        <div className="topbarRight">
-          <span className="versionPill">v9.1</span>
-          <span className="cloudPill">● Cloud</span>
-          <form action={logout}>
-            <button className="accountButton" type="submit" title="Keluar">♙</button>
-          </form>
-        </div>
-      </header>
-
-      <nav className="mainNav">
-        <Link href="/">🏠 <span>Home</span></Link>
-        <Link href="/kebun">🌴 <span>Kebun</span></Link>
-        <Link href="/aktivitas">＋ <span>Aktivitas</span></Link>
-        <Link href="/pupuk">🧺 <span>Pupuk</span></Link>
-        <Link href="/tenaga-kerja">👷 <span>Tenaga</span></Link>
-        <Link href="/panen">🌾 <span>Panen</span></Link>
-        <Link href="/rencana">🗓️ <span>Rencana</span></Link>
-        <Link href="/kalender">📅 <span>Kalender</span></Link>
-        <Link href="/anggaran">💰 <span>Anggaran</span></Link>
-        <Link href="/laporan">📋 <span>Laporan</span></Link>
-        <Link href="/analytics">📊 <span>Analytics</span></Link>
+export function DashboardShell({ children }: { children: ReactNode }) {
+  return <div className="appShell premiumShell">
+    <aside className="sideRail">
+      <Link className="sideBrand" href="/"><span>🌴</span><div><b>SawitProNesia</b><small>Manajemen Kebun Sawit</small></div></Link>
+      <nav className="sideNav">{nav.map(([href,icon,label])=><Link key={href} href={href}><i>{icon}</i><span>{label}</span></Link>)}</nav>
+      <div className="sideFoot"><small>PREMIUM MOBILE-FIRST</small><b>v9.2</b></div>
+    </aside>
+    <div className="shellBody">
+      <header className="mobileTopbar"><Link className="mobileBrand" href="/"><span>🌴</span><b>SawitProNesia</b></Link><div><span className="versionPill">v9.2</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar">♙</button></form></div></header>
+      <main className="content premiumContent">{children}</main>
+      <nav className="mobileBottomNav">
+        <Link href="/"><i>⌂</i><span>Beranda</span></Link><Link href="/kalender"><i>□</i><span>Kalender</span></Link><Link className="mobileFab" href="/aktivitas"><i>＋</i></Link><Link href="/rencana"><i>▣</i><span>Rencana</span></Link><Link href="/kebun"><i>♧</i><span>Kebun</span></Link>
       </nav>
-
-      <main className="content">{children}</main>
     </div>
-  );
+  </div>;
 }
