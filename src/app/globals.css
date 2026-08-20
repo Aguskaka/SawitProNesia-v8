@@ -139,3 +139,7 @@ body{background:var(--v92-bg);color:var(--v92-text)}.premiumShell{display:grid;g
  .v931PriorityGrid,.v931PerformanceGrid,.v931InsightGrid{grid-template-columns:1fr}.v931PriorityGrid>article:last-child,.v931InsightGrid>article:last-child{grid-column:auto}.v931Budget{grid-template-columns:88px 1fr}
  .v931Quick>div{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+/* v9.3.1 final integrity refinement */
+.v931HeroHint{display:block;margin-top:7px;font-size:7px;color:#bcd7c5;max-width:560px;line-height:1.5}
+@media(max-width:640px){.v931HeroHint{font-size:8px;max-width:300px}}
