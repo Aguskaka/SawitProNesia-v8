@@ -7,6 +7,7 @@ import { getAppContext } from "@/lib/context/server-context";
 import { annualSummary, costPerKg, monthlyFinancialSeries, tonPerHa, transactionYear } from "@/lib/calculations/annual";
 import { budgetUsage } from "@/lib/calculations/budget";
 import { getCalendarPlanStatus, statusSortWeight } from "@/lib/calculations/calendar";
+import type { CalendarPlanStatus } from "@/lib/calculations/calendar";
 import { getPlanProgress } from "@/lib/calculations/plan";
 import { getEstateStage } from "@/lib/calculations/estate-stage";
 import { fertilizerProgramProgress } from "@/lib/calculations/fertilizer";
@@ -55,7 +56,7 @@ export default async function HomePage(){
    return {kind:"fertilizer" as const,id:program.id,type:"Pemupukan",date:program.planned_date,status,progress:{target:progress.plannedKg,actual:progress.actualKg,percentage:progress.percentage},block};
  });
  const agendaRows=[...planRows,...fertilizerRows];
- const attention=agendaRows.filter(r=>["Terlambat","Reminder","Hari Ini","Sebagian"].includes(r.status)).sort((a,b)=>statusSortWeight(a.status)-statusSortWeight(b.status));
+ const attention=agendaRows.filter(r=>["Terlambat","Reminder","Hari Ini","Sebagian"].includes(r.status)).sort((a,b)=>statusSortWeight(a.status as CalendarPlanStatus)-statusSortWeight(b.status as CalendarPlanStatus));
  const upcoming=agendaRows.filter(r=>r.date>=today&&r.status!=="Selesai").sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
  const finance=monthlyFinancialSeries(harvests,operations,estate.id,context.selectedYear),chartMax=Math.max(...finance.flatMap(x=>[x.revenue,x.cost]),1);
  const blockProduction=estateBlocks.map(b=>({name:b.name,kg:harvests.filter(h=>h.estate_id===estate.id&&h.block_id===b.id&&transactionYear(h.harvest_date)===context.selectedYear).reduce((s,h)=>s+Number(h.weight_kg??0),0)})).sort((a,b)=>b.kg-a.kg);
