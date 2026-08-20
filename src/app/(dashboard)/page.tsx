@@ -78,7 +78,7 @@ export default async function HomePage(){
    topBlock&&topBlock.kg>0?`${topBlock.name} adalah kontributor produksi tertinggi: ${formatNumber(topBlock.kg)} Kg.`:`Belum ada produksi panen ${context.selectedYear}; kebun masih berada pada fase ${stage}.`,
    efficiency>0?`Biaya produksi saat ini ${formatRupiah(efficiency)}/Kg TBS.`:`Actual biaya ${formatCompactRupiah(summary.cost)} belum dapat dibagi per Kg karena belum ada produksi.`
  ];
- return <div className="commandCenter v92Home v931Home">
+ return <div className="commandCenter v92Home v931Home v932Home">
   <section className="v931Hero">
    <div className="v931HeroTop">
     <div><span>OWNER COMMAND CENTER</span><h1>{estate.name}</h1><p>{context.selectedYear} · {stage} · {estateBlocks.length} blok · {formatNumber(area)} Ha · {formatNumber(trees)} pohon</p><small className="v931HeroHint">Ringkasan keputusan hari ini — detail finansial hanya ditampilkan sekali pada KPI utama.</small></div>
