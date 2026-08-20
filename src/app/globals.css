@@ -80,3 +80,44 @@ body{background:var(--v92-bg);color:var(--v92-text)}.premiumShell{display:grid;g
 .fertTabs{display:flex;gap:7px;position:sticky;top:76px;z-index:5;background:rgba(245,248,243,.92);backdrop-filter:blur(10px);padding:7px;border:1px solid #e1eade;border-radius:14px;width:max-content;max-width:100%}.fertTabs a{padding:9px 13px;border-radius:10px;font-size:9px;font-weight:900;color:#52675a}.fertTabs a:hover,.fertTabs a:focus{background:#e8f3e5;color:#17682f}.fertRecommendation{display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(120deg,#edf7ea,#f7faf5);border:1px solid #dbe9d7;border-radius:11px;padding:10px}.fertRecommendation div{display:grid;gap:2px}.fertRecommendation span{font-size:7px;font-weight:900;letter-spacing:.1em;color:#6c8170}.fertRecommendation b{font-size:9px;color:#165d2c}.fertRecommendation small{font-size:7px;color:#7b897f}.fertRecommendation button{border:1px solid #cfe0cb;background:#fff;color:#17682f;border-radius:9px;padding:8px 10px;font-size:8px;font-weight:900}.fertPage{width:min(100%,1440px);margin-inline:auto}.fertReferencePanel{scroll-margin-top:130px}.fertWorkspace{scroll-margin-top:130px}
 @media(min-width:1500px){.fertPage{width:min(94vw,1540px)}}
 @media(max-width:640px){.fertPage{width:100%;gap:12px}.fertTabs{top:64px;width:100%;overflow-x:auto;justify-content:flex-start}.fertTabs a{white-space:nowrap;flex:0 0 auto}.fertWorkspace{display:flex;flex-direction:column}.fertComposer,.fertHistory{width:100%;padding:14px}.fertForm{grid-template-columns:1fr}.fertItemRow{grid-template-columns:1fr 1fr}.fertItemRow input:first-child{grid-column:1/-1}.fertRecommendation{align-items:flex-start;flex-direction:column}.fertRecommendation button{width:100%}.fertKpis{grid-template-columns:1fr 1fr}.planningHeading{padding-inline:15px}}
+
+
+/* v9.3 — Home & Owner Command Center Final */
+.v92Home{width:min(100%,1540px);margin-inline:auto}
+.v92HeroCopy h1{max-width:720px}
+.commandPanel header a{font-weight:800;color:#16733a}
+.commandPanel header a:hover{text-decoration:underline}
+.commandKpis article{overflow:hidden}
+.commandKpis article:after{content:"";position:absolute;width:70px;height:70px;right:-25px;top:-25px;border-radius:50%;background:rgba(24,126,61,.035)}
+.quickActions{position:relative}
+@media(min-width:1280px){
+ .v92Home{gap:16px}
+ .v92Hero{padding:26px 28px;min-height:270px}
+ .v92HeroCopy h1{font-size:31px}
+ .v92HeroCopy p{font-size:10px}
+ .commandKpis article{min-height:120px;padding:17px}
+ .commandPanel{padding:18px}
+}
+@media(max-width:640px){
+ .v92Home{width:100%;margin:0}
+ .v92Hero{min-height:auto;padding:16px;border-radius:20px}
+ .v92HeroCopy{margin-top:15px}
+ .v92HeroCopy>span{font-size:8px}
+ .v92HeroCopy h1{font-size:24px;line-height:1.08;margin-top:7px}
+ .v92HeroCopy p{font-size:10px;line-height:1.45;max-width:310px}
+ .v92HeroStats{border-radius:14px}
+ .v92HeroStats small,.v92HeroStats span{font-size:8px}
+ .commandKpis article{min-width:158px;min-height:112px;padding:14px}
+ .commandKpis small{font-size:8px}.commandKpis strong{font-size:17px}
+ .commandPanel header>span,.quickActions>span{font-size:9px;letter-spacing:.09em}
+ .commandPanel header a{font-size:9px}
+ .attentionList{display:grid;grid-template-columns:1fr;gap:7px}
+ .attentionItem{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:7px}
+ .attentionItem span,.attentionItem small{margin:0}
+ .agendaList>div{grid-template-columns:38px minmax(0,1fr) auto}
+ .budgetCommand{grid-template-columns:92px minmax(0,1fr)}
+ .quickActions{margin-bottom:2px}
+ .quickActions>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .quickActions a{min-width:0;min-height:62px;display:grid;place-items:center;text-align:center}
+ .quickActions b{font-size:8px;line-height:1.2}
+}
