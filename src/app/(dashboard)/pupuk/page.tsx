@@ -9,6 +9,7 @@ import { createFertilizerProgram } from "@/features/fertilizer/actions";
 import { fertilizerProgramProgress } from "@/lib/calculations/fertilizer";
 import { formatCompactRupiah, formatNumber } from "@/lib/formatters";
 import { FERTILIZER_FORMULAS, TBM_MINERAL_COMPOUND, TM_MINERAL_COMPOUND } from "@/lib/fertilizer-recommendations";
+import { FertilizerProgramForm } from "@/components/fertilizer-program-form";
 
 function idDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" })
@@ -26,7 +27,7 @@ export default async function FertilizerPage({
 
   const [er, br, pr, ir, exr, eir] = await Promise.all([
     supabase.from("estates").select("id,name").order("created_at"),
-    supabase.from("blocks").select("id,estate_id,name,trees,fertilizer_pattern").order("name"),
+    supabase.from("blocks").select("id,estate_id,name,trees,fertilizer_pattern,planting_year,planting_date,soil_type").order("name"),
     supabase.from("fertilizer_programs").select("*").order("planned_date"),
     supabase.from("fertilizer_program_items").select("*").order("sort_order"),
     supabase.from("fertilizer_executions").select("*"),
@@ -85,7 +86,11 @@ export default async function FertilizerPage({
       </section>
 
 
-      <section className="fertReferencePanel">
+      <nav className="fertTabs" aria-label="Navigasi pemupukan">
+        <a href="#program">Program Pemupukan</a><a href="#program">Realisasi</a><a href="#acuan">Acuan Dosis</a>
+      </nav>
+
+      <section className="fertReferencePanel" id="acuan">
         <div className="fertReferenceHead">
           <div>
             <span>ACUAN DOSIS PEMUPUKAN</span>
@@ -146,37 +151,11 @@ export default async function FertilizerPage({
         </div>
       </section>
 
-      <section className="fertWorkspace">
+      <section className="fertWorkspace" id="program">
         <aside className="fertComposer">
           <div className="activitySectionTitle"><span>＋ PROGRAM BARU</span><h2>Rencana Pemupukan</h2></div>
           {estate && estateBlocks.length ? (
-            <form action={createFertilizerProgram} className="fertForm">
-              <input type="hidden" name="estate_id" value={estate.id} />
-              <input type="hidden" name="selected_year" value={context.selectedYear} />
-
-              <label>Blok<select name="block_id" required>{estateBlocks.map((b)=><option value={b.id} key={b.id}>{b.name} · {b.trees} pohon</option>)}</select></label>
-              <label>Tanggal Rencana<input name="planned_date" type="date" defaultValue={`${context.selectedYear}-08-25`} required /></label>
-              <label>Pola<select name="pattern" defaultValue="majemuk"><option value="majemuk">Majemuk</option><option value="tunggal">Tunggal</option><option value="kombinasi">Kombinasi</option></select></label>
-              <label>Mode<select name="planning_mode" defaultValue="manual"><option value="manual">Manual</option><option value="auto">Auto/Recommendation</option></select></label>
-              <label>Periode<input name="period_label" placeholder="Semester 2 / Umur 12 bulan" /></label>
-              <label>Sumber Rekomendasi<input name="recommendation_source" placeholder="PPKS / Agronom / Manual" /></label>
-              <label>Target Umur (bulan)<input name="target_age_months" type="number" min="0" step="1" /></label>
-              <label className="fullField">Catatan<textarea name="note" rows={2} /></label>
-
-              <div className="fertItemHeader fullField">Item Pupuk — isi minimal satu baris</div>
-              {[1,2,3,4].map((i)=>(
-                <div className="fertItemRow fullField" key={i}>
-                  <input name={`fertilizer_name_${i}`} placeholder={`Nama pupuk ${i}`} />
-                  <input name={`standard_dose_${i}`} type="number" min="0" step="0.001" placeholder="Dosis std" />
-                  <input name={`custom_dose_${i}`} type="number" min="0" step="0.001" placeholder="Dosis custom" />
-                  <select name={`dose_unit_${i}`} defaultValue="g/pohon"><option>g/pohon</option><option>kg/pohon</option><option>Kg</option></select>
-                  <input name={`requirement_kg_${i}`} type="number" min="0" step="0.01" placeholder="Kebutuhan Kg (opsional)" />
-                  <input name={`unit_price_${i}`} type="number" min="0" step="1" placeholder="Harga/Kg" />
-                </div>
-              ))}
-
-              <button className="primaryButton fullField" type="submit">Simpan Program Pupuk</button>
-            </form>
+            <FertilizerProgramForm estateId={estate.id} selectedYear={context.selectedYear} blocks={estateBlocks} action={createFertilizerProgram} />
           ) : <div className="emptyState">Tambahkan blok terlebih dahulu.</div>}
         </aside>
 

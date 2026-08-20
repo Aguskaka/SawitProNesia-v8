@@ -71,7 +71,7 @@ export async function createFertilizerProgram(formData: FormData) {
   }
 
   const rows = [];
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const fertilizerName = text(formData, `fertilizer_name_${i}`);
     if (!fertilizerName) continue;
 
