@@ -36,15 +36,26 @@ export async function createEstate(formData: FormData) {
 
 export async function updateEstate(estateId: string, formData: FormData) {
   const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) redirect("/login");
+
   const name = text(formData, "name");
   if (!name) throw new Error("Nama kebun wajib diisi.");
-  const { error } = await supabase.from("estates").update({
+
+  const { data, error } = await supabase.from("estates").update({
     name,
     latitude: text(formData, "latitude") ? num(formData, "latitude") : null,
     longitude: text(formData, "longitude") ? num(formData, "longitude") : null,
-  }).eq("id", estateId);
-  if (error) throw new Error(error.message);
-  revalidatePath("/"); revalidatePath("/kebun"); revalidatePath(`/kebun/${estateId}`);
+  }).eq("id", estateId).select("id").single();
+
+  if (error || !data) {
+    throw new Error(`Perubahan kebun gagal disimpan: ${error?.message ?? "record tidak ter-update"}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/kebun");
+  revalidatePath(`/kebun/${estateId}`);
+  redirect(`/kebun/${estateId}?status=updated`);
 }
 
 export async function createBlock(estateId: string, formData: FormData) {
@@ -64,16 +75,33 @@ export async function createBlock(estateId: string, formData: FormData) {
 
 export async function updateBlock(estateId: string, blockId: string, formData: FormData) {
   const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) redirect("/login");
+
   const name = text(formData, "name");
   if (!name) throw new Error("Nama blok wajib diisi.");
-  const { error } = await supabase.from("blocks").update({
-    name, area: num(formData, "area"), trees: Math.max(0, Math.trunc(num(formData, "trees"))),
-    planting_year: intOrNull(formData, "planting_year"), planting_date: text(formData, "planting_date"),
-    variety: text(formData, "variety"), soil_type: text(formData, "soil_type"),
-    fertilizer_pattern: text(formData, "fertilizer_pattern"), status: text(formData, "status") ?? "Aktif",
-  }).eq("id", blockId).eq("estate_id", estateId);
-  if (error) throw new Error(error.message);
-  revalidatePath("/"); revalidatePath("/kebun"); revalidatePath(`/kebun/${estateId}`); revalidatePath(`/kebun/${estateId}/blok/${blockId}`);
+
+  const { data, error } = await supabase.from("blocks").update({
+    name,
+    area: num(formData, "area"),
+    trees: Math.max(0, Math.trunc(num(formData, "trees"))),
+    planting_year: intOrNull(formData, "planting_year"),
+    planting_date: text(formData, "planting_date"),
+    variety: text(formData, "variety"),
+    soil_type: text(formData, "soil_type") ?? "mineral",
+    fertilizer_pattern: text(formData, "fertilizer_pattern") ?? "tunggal",
+    status: text(formData, "status") ?? "Aktif",
+  }).eq("id", blockId).eq("estate_id", estateId).select("id").single();
+
+  if (error || !data) {
+    throw new Error(`Perubahan blok gagal disimpan: ${error?.message ?? "record tidak ter-update"}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/kebun");
+  revalidatePath(`/kebun/${estateId}`);
+  revalidatePath(`/kebun/${estateId}/blok/${blockId}`);
+  redirect(`/kebun/${estateId}/blok/${blockId}?status=updated`);
 }
 
 export async function deleteBlock(estateId: string, blockId: string) {

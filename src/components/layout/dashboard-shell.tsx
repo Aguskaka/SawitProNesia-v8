@@ -16,10 +16,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     <aside className="sideRail">
       <Link className="sideBrand" href="/"><span>🌴</span><div><b>SawitProNesia</b><small>Manajemen Kebun Sawit</small></div></Link>
       <nav className="sideNav">{nav.map(([href,icon,label])=><Link key={href} href={href}><i><AppIcon name={icon}/></i><span>{label}</span></Link>)}</nav>
-      <div className="sideFoot"><small>PREMIUM MOBILE-FIRST</small><b>v9.2</b></div>
+      <div className="sideFoot"><small>PREMIUM MOBILE-FIRST</small><b>v9.2.2</b></div>
     </aside>
     <div className="shellBody">
-      <header className="mobileTopbar"><Link className="mobileBrand" href="/"><span>🌴</span><b>SawitProNesia</b></Link><div><span className="versionPill">v9.2</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar"><AppIcon name="user"/></button></form></div></header>
+      <header className="mobileTopbar"><Link className="mobileBrand" href="/"><span>🌴</span><b>SawitProNesia</b></Link><div><span className="versionPill">v9.2.2</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar"><AppIcon name="user"/></button></form></div></header>
       <main className="content premiumContent">{children}</main>
       <MobileNavigation/>
     </div>

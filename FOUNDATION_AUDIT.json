@@ -1,5 +1,5 @@
 {
-  "version": "9.0.0",
+  "version": "9.2.2",
   "cloudflare_workers_ready": true,
   "adapter": "@opennextjs/cloudflare",
   "wrangler_config": true,
@@ -102,5 +102,13 @@
   "workforce_hok_cost": true,
   "dashboard_error_boundary": true,
   "dashboard_loading_state": true,
-  "ui_final_polish_deferred_to": "v9.1"
+  "ui_final_polish_deferred_to": "v9.1",
+  "fertilizer_reference_restored": true,
+  "tbm_formula": "NPK 12.12.17.2 + 0,75B",
+  "tm_formula": "NPK 13.6.27.4 + 0,65B",
+  "block_update_verified_row": true,
+  "block_update_success_feedback": true,
+  "estate_update_verified_row": true,
+  "explicit_button_types": true,
+  "button_static_audit": true
 }

@@ -20,7 +20,7 @@ export default function DashboardError({
         Data Anda tidak dihapus. Coba muat ulang halaman. Jika tetap terjadi,
         cek deployment log Cloudflare.
       </p>
-      <button onClick={() => reset()}>Coba Lagi</button>
+      <button type="button" onClick={() => reset()}>Coba Lagi</button>
       {error.digest ? <small>Error ID: {error.digest}</small> : null}
     </section>
   );

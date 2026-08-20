@@ -56,6 +56,6 @@ export default async function FertilizerProgramDetail({
     </section>:null}
 
     <section className="planActualSection"><div className="activitySectionTitle"><span>EXECUTION HISTORY</span><h2>Histori Realisasi</h2></div><div className="planActualList">{execs.map(ex=><div className="planActualRow" key={ex.id}><span>🧺</span><div><b>{idDate(ex.execution_date)}</b><small>{ex.worker||"Pelaksana belum diisi"}</small></div><strong>{execItems.filter(x=>x.execution_id===ex.id).reduce((s,x)=>s+Number(x.actual_quantity_kg??0),0).toLocaleString("id-ID")} Kg</strong></div>)}{!execs.length?<div className="emptyActivity">Belum ada realisasi.</div>:null}</div></section>
-    <section className="dangerPanel"><div><b>Hapus Program Pupuk</b><p>Hanya dapat dihapus sebelum memiliki realisasi.</p></div><form action={del}><button className="dangerButton" disabled={execs.length>0}>Hapus Program</button></form></section>
+    <section className="dangerPanel"><div><b>Hapus Program Pupuk</b><p>Hanya dapat dihapus sebelum memiliki realisasi.</p></div><form action={del}><button className="dangerButton" type="submit" disabled={execs.length>0}>Hapus Program</button></form></section>
   </div>;
 }

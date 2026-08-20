@@ -23,7 +23,7 @@ export default async function EstatesPage() {
   return <div className="masterPage">
     <section className="masterHeading">
       <div><span>MASTER DATA</span><h1>Kebun & Blok</h1><p>Kelola struktur kebun. Tahun Global hanya menentukan status umur tanaman, bukan memfilter master data.</p></div>
-      <details className="actionDetails"><summary>＋ Tambah Kebun</summary><form action={createEstate} className="masterForm compactForm"><label>Nama Kebun<input name="name" required /></label><label>Latitude<input name="latitude" type="number" step="any" /></label><label>Longitude<input name="longitude" type="number" step="any" /></label><button className="primaryButton">Simpan Kebun</button></form></details>
+      <details className="actionDetails"><summary>＋ Tambah Kebun</summary><form action={createEstate} className="masterForm compactForm"><label>Nama Kebun<input name="name" required /></label><label>Latitude<input name="latitude" type="number" step="any" /></label><label>Longitude<input name="longitude" type="number" step="any" /></label><button className="primaryButton" type="submit">Simpan Kebun</button></form></details>
     </section>
     <section className="estateCards">
       {estates.map((estate) => {

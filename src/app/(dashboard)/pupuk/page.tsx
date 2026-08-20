@@ -8,6 +8,7 @@ import { ContextSelector } from "@/components/layout/context-selector";
 import { createFertilizerProgram } from "@/features/fertilizer/actions";
 import { fertilizerProgramProgress } from "@/lib/calculations/fertilizer";
 import { formatCompactRupiah, formatNumber } from "@/lib/formatters";
+import { FERTILIZER_FORMULAS, TBM_MINERAL_COMPOUND, TM_MINERAL_COMPOUND } from "@/lib/fertilizer-recommendations";
 
 function idDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" })
@@ -81,6 +82,68 @@ export default async function FertilizerPage({
         <article><small>Belum Selesai</small><strong>{unfinished}</strong><span>Terjadwal / sebagian</span></article>
         <article><small>Estimasi Biaya</small><strong>{formatCompactRupiah(estimated)}</strong><span>Program {context.selectedYear}</span></article>
         <article><small>Actual Biaya</small><strong>{formatCompactRupiah(actual)}</strong><span>Dari execution items</span></article>
+      </section>
+
+
+      <section className="fertReferencePanel">
+        <div className="fertReferenceHead">
+          <div>
+            <span>ACUAN DOSIS PEMUPUKAN</span>
+            <h2>TBM & TM — Tanah Mineral</h2>
+            <p>Dosis referensi dikembalikan dari baseline agronomi SawitProNesia lama. Dosis kebun tetap dapat disesuaikan berdasarkan analisis tanah/daun dan rekomendasi agronom.</p>
+          </div>
+          <div className="fertFormulaBadges">
+            <b>TBM · {FERTILIZER_FORMULAS.tbm}</b>
+            <b>TM · {FERTILIZER_FORMULAS.tm}</b>
+          </div>
+        </div>
+
+        <div className="fertReferenceGrid">
+          <article>
+            <header><span>TBM · MAJEMUK</span><h3>Milestone Umur Tanaman</h3><small>Satuan gram/pohon/aplikasi</small></header>
+            <div className="fertReferenceTableWrap">
+              <table className="fertReferenceTable">
+                <thead><tr><th>Umur</th><th>Urea</th><th>NPK 12.12.17</th><th>Dolomit</th></tr></thead>
+                <tbody>
+                  {TBM_MINERAL_COMPOUND.map((row) => (
+                    <tr key={row.month}>
+                      <td><b>{row.month} bln</b></td>
+                      <td>{row.urea || "—"}</td>
+                      <td>{row.npk || "—"}</td>
+                      <td>{row.dolomite || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article>
+            <header><span>TM · MAJEMUK</span><h3>Kelompok Umur Produktif</h3><small>Satuan kg/pohon; dibagi Semester I & II</small></header>
+            <div className="fertReferenceTableWrap">
+              <table className="fertReferenceTable tmReferenceTable">
+                <thead><tr><th>Umur</th><th>Semester I</th><th>Semester II</th><th>Total/thn</th></tr></thead>
+                <tbody>
+                  {TM_MINERAL_COMPOUND.map((row) => (
+                    <tr key={row.age}>
+                      <td><b>{row.age} th</b></td>
+                      <td>
+                        Bioneensis {row.semester1.bioneensis} · NPK {row.semester1.npk} · Urea {row.semester1.urea} · Dol {row.semester1.dolomite} · Borax {row.semester1.borax}
+                      </td>
+                      <td>NPK {row.semester2.npk} · Bioneensis {row.semester2.bioneensis}</td>
+                      <td><b>{row.annual} kg</b></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <div className="fertReferenceNote">
+          <b>Catatan formula:</b>
+          <span>TBM memakai NPK 12.12.17.2 + 0,75B. TM memakai NPK 13.6.27.4 + 0,65B. Formula NPK lain perlu dikonversi berdasarkan kandungan hara, bukan disamakan beratnya.</span>
+        </div>
       </section>
 
       <section className="fertWorkspace">

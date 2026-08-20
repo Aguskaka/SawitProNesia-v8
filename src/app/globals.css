@@ -55,3 +55,23 @@ body{background:var(--v92-bg);color:var(--v92-text)}.premiumShell{display:grid;g
  .reportHeading,.analyticsHeading{margin:0;padding:18px 16px;border-radius:18px}.reportHeading>div:first-child,.analyticsHeading>div:first-child{min-width:0}.reportHeading p,.analyticsHeading p{font-size:12px;line-height:1.5;max-width:100%}.reportHeading .heroContext,.analyticsHeading .heroContext{min-width:0;max-width:100%}.reportHeading .heroContext select,.analyticsHeading .heroContext select{min-width:0;max-width:100%}
  .reportHero,.analyticsHero{width:100%;min-width:0;border-radius:18px}.reportKpis,.analyticsKpis{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;padding-bottom:2px}.reportKpis::-webkit-scrollbar,.analyticsKpis::-webkit-scrollbar{display:none}.reportKpis article,.analyticsKpis article{min-width:155px;scroll-snap-align:start}.reportGrid,.reportLowerGrid,.analyticsGrid,.analyticsSecondGrid{width:100%;min-width:0}.reportPanel,.analyticsPanel{width:100%;min-width:0;overflow:hidden}.reportGrid>.reportPanel:first-child,.analyticsGrid>.analyticsPanel:first-child,.analyticsSecondGrid>.analyticsPanel:first-child{overflow:hidden}.financialChart,.productionChart,.analyticsFinanceChart{min-width:0!important;width:100%;gap:3px}.financialBars i,.analyticsFinanceMonth i{width:5px}.productionTrack i{width:12px}.reportTable,.analyticsTable{font-size:8px}.monthlyTableWrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
+
+/* v9.2.2 — fertilizer reference + master save feedback */
+.fertReferencePanel{background:#fff;border:1px solid #e2ebe0;border-radius:20px;padding:18px;box-shadow:0 8px 24px rgba(24,70,33,.04)}
+.fertReferenceHead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+.fertReferenceHead span{font-size:8px;font-weight:900;letter-spacing:.13em;color:#6d8372}
+.fertReferenceHead h2{font-size:18px;margin:3px 0 5px;color:#174c28}
+.fertReferenceHead p{font-size:8px;color:#77867b;margin:0;max-width:680px;line-height:1.5}
+.fertFormulaBadges{display:grid;gap:5px;min-width:220px}.fertFormulaBadges b{padding:7px 9px;border-radius:999px;background:#edf7ea;color:#17682f;font-size:7px;text-align:center}
+.fertReferenceGrid{display:grid;grid-template-columns:1fr 1.25fr;gap:12px}
+.fertReferenceGrid article{border:1px solid #e5ece2;border-radius:14px;padding:12px;background:#fbfdf9;min-width:0}
+.fertReferenceGrid header span{font-size:7px;font-weight:900;color:#24723a}.fertReferenceGrid header h3{font-size:13px;margin:3px 0}.fertReferenceGrid header small{font-size:7px;color:#849087}
+.fertReferenceTableWrap{overflow:auto;margin-top:9px;border-radius:9px}
+.fertReferenceTable{width:100%;border-collapse:collapse;font-size:7px;min-width:430px;background:#fff}
+.fertReferenceTable th,.fertReferenceTable td{padding:7px 8px;border-bottom:1px solid #edf1eb;text-align:left;vertical-align:top}
+.fertReferenceTable th{background:#eff6ed;color:#516a58;font-size:6.5px;text-transform:uppercase;letter-spacing:.04em}
+.tmReferenceTable{min-width:720px}
+.fertReferenceNote{display:flex;gap:6px;align-items:flex-start;margin-top:12px;background:#eff7ec;border-radius:10px;padding:10px;font-size:7px;color:#647469}
+.fertReferenceNote b{color:#17682f;white-space:nowrap}
+@media(max-width:900px){.fertReferenceGrid{grid-template-columns:1fr}.fertReferenceHead{display:grid}.fertFormulaBadges{display:flex;flex-wrap:wrap;min-width:0}}
+@media(max-width:640px){.fertReferencePanel{padding:13px;border-radius:16px}.fertReferenceHead h2{font-size:16px}.fertFormulaBadges{display:grid;grid-template-columns:1fr}.fertReferenceTable{font-size:7px}.fertReferenceTable th,.fertReferenceTable td{padding:6px}.fertReferenceNote{display:grid}}
