@@ -13,6 +13,7 @@ import { getEstateStage } from "@/lib/calculations/estate-stage";
 import { fertilizerProgramProgress } from "@/lib/calculations/fertilizer";
 import { formatCompactRupiah, formatNumber, formatRupiah } from "@/lib/formatters";
 import { ContextSelector } from "@/components/layout/context-selector";
+import { AppIcon } from "@/components/layout/app-icons";
 
 const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
 function idDate(value:string|null){if(!value)return "-";return new Intl.DateTimeFormat("id-ID",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(`${value.slice(0,10)}T00:00:00`));}
@@ -127,7 +128,15 @@ export default async function HomePage(){
    <article className="commandPanel"><header><span>AKTIVITAS TERAKHIR</span><Link href="/aktivitas">Semua →</Link></header><div className="commandRecent">{recent.map(x=><div key={x.id}><i>{x.icon}</i><span><b>{x.title}</b><small>{idDate(x.date)}</small></span><strong>{x.value}</strong></div>)}</div></article>
   </section>
 
-  <section className="quickActions v931Quick"><span>AKSI CEPAT</span><div><Link href="/rencana">🗓️<b>Rencana Baru</b></Link><Link href="/aktivitas">✅<b>Catat Aktivitas</b></Link><Link href="/panen">🌾<b>Catat Panen</b></Link><Link href="/pupuk">🧺<b>Pemupukan</b></Link><Link href="/tenaga-kerja">👷<b>Tenaga Kerja</b></Link><Link href="/laporan">📋<b>Laporan</b></Link><Link href="/analytics">📊<b>Analytics</b></Link></div></section>
+  <section className="quickActions v931Quick"><span>AKSI CEPAT</span><div>
+   <Link href="/rencana"><i><AppIcon name="plan"/></i><b>Rencana Baru</b></Link>
+   <Link href="/aktivitas"><i><AppIcon name="activity"/></i><b>Catat Aktivitas</b></Link>
+   <Link href="/panen"><i><AppIcon name="harvest"/></i><b>Catat Panen</b></Link>
+   <Link href="/pupuk"><i><AppIcon name="fertilizer"/></i><b>Pemupukan</b></Link>
+   <Link href="/tenaga-kerja"><i><AppIcon name="workforce"/></i><b>Tenaga Kerja</b></Link>
+   <Link href="/laporan"><i><AppIcon name="report"/></i><b>Laporan</b></Link>
+   <Link href="/analytics"><i><AppIcon name="analytics"/></i><b>Analytics</b></Link>
+  </div></section>
 
  </div>;
 }
