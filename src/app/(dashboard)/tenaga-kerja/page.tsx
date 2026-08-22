@@ -23,7 +23,7 @@ export default async function WorkforcePage({ searchParams }: { searchParams: Pr
 
   const [estateResult, blockResult, operationResult] = await Promise.all([
     supabase.from("estates").select("id,name").order("created_at"),
-    supabase.from("blocks").select("id,estate_id,name,area_ha,trees").order("name"),
+    supabase.from("blocks").select("id,estate_id,name,area,trees").order("name"),
     supabase.from("operations").select("*").order("op_date", { ascending: false }),
   ]);
   for (const result of [estateResult, blockResult, operationResult]) if (result.error) throw new Error(result.error.message);
