@@ -8,6 +8,7 @@ import { ContextSelector } from "@/components/layout/context-selector";
 import { createPlan } from "@/features/plans/actions";
 import { getPlanProgress, planActualUnit } from "@/lib/calculations/plan";
 import { formatNumber } from "@/lib/formatters";
+import { AppIcon } from "@/components/layout/app-icons";
 
 function idDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", {
@@ -17,15 +18,14 @@ function idDate(value: string) {
   }).format(new Date(`${value}T00:00:00`));
 }
 
-function icon(type: string) {
-  if (type === "Panen") return "🌾";
-  if (type === "Pemupukan") return "🧺";
-  if (type === "Perawatan") return "✂️";
-  if (type === "Penyemprotan") return "💧";
-  if (type === "Tenaga Kerja") return "👷";
-  if (type === "Biaya") return "🧾";
-  return "📌";
+function planIcon(type: string) {
+  if (type === "Panen") return "harvest" as const;
+  if (type === "Pemupukan") return "fertilizer" as const;
+  if (type === "Tenaga Kerja") return "workforce" as const;
+  if (type === "Biaya") return "budget" as const;
+  return "activity" as const;
 }
+
 
 export default async function PlanningPage({
   searchParams,
@@ -91,21 +91,22 @@ export default async function PlanningPage({
   const late = rows.filter((r) => r.progress.status === "Terlambat").length;
 
   return (
-    <div className="planningPage">
-      <section className="planningHeading">
-        <div>
-          <span>PLAN MANAGEMENT</span>
-          <h1>Rencana Kebun</h1>
-          <p>
-            Rencana dipisahkan dari Actual. Progress hanya bergerak dari transaksi
-            yang benar-benar memiliki plan_id.
-          </p>
+    <div className="planningPage v100PlanningPage">
+      <section className="v100PlanHero">
+        <div className="v100PlanHeroTop">
+          <div>
+            <span>OPERATIONAL PLANNING CENTER</span>
+            <h1>Rencana Operasional</h1>
+            <p>Susun agenda kerja kebun, pantau target dan actual, lalu prioritaskan pekerjaan yang perlu ditindaklanjuti.</p>
+          </div>
+          <ContextSelector estates={estates} selectedYear={context.selectedYear} activeEstateId={activeEstateId} />
         </div>
-        <ContextSelector
-          estates={estates}
-          selectedYear={context.selectedYear}
-          activeEstateId={activeEstateId}
-        />
+        <div className="v100PlanSignals">
+          <article><small>KEBUN AKTIF</small><strong>{activeEstate?.name ?? "-"}</strong><span>{activeBlocks.length} blok operasional</span></article>
+          <article><small>RENCANA TAHUNAN</small><strong>{rows.length}</strong><span>{context.selectedYear}</span></article>
+          <article><small>PROGRESS SELESAI</small><strong>{rows.length ? formatNumber((done / rows.length) * 100, 1) : "0"}%</strong><span>{done} dari {rows.length} rencana</span></article>
+          <article className={late ? "v100SignalAlert" : ""}><small>PERLU PERHATIAN</small><strong>{late + partial}</strong><span>{late} terlambat · {partial} sebagian</span></article>
+        </div>
       </section>
 
       {params.status ? (
@@ -227,7 +228,7 @@ export default async function PlanningPage({
               const pct = Math.min(progress.percentage, 100);
               return (
                 <Link href={`/rencana/${plan.id}`} className="planningRow" key={plan.id}>
-                  <span className="planningIcon">{icon(plan.type)}</span>
+                  <span className="planningIcon"><AppIcon name={planIcon(plan.type)} /></span>
                   <div className="planningRowMain">
                     <b>{plan.type} · {block?.name ?? "Seluruh Kebun"}</b>
                     <small>

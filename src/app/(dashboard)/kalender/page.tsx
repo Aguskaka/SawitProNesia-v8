@@ -13,6 +13,7 @@ import {
 } from "@/lib/calculations/calendar";
 import { getPlanProgress, planActualUnit } from "@/lib/calculations/plan";
 import { formatNumber } from "@/lib/formatters";
+import { AppIcon } from "@/components/layout/app-icons";
 
 const MONTHS = [
   "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -25,15 +26,14 @@ function pad(value: number) {
   return String(value).padStart(2, "0");
 }
 
-function icon(type: string) {
-  if (type === "Panen") return "🌾";
-  if (type === "Pemupukan") return "🧺";
-  if (type === "Perawatan") return "✂️";
-  if (type === "Penyemprotan") return "💧";
-  if (type === "Tenaga Kerja") return "👷";
-  if (type === "Biaya") return "🧾";
-  return "📌";
+function planIcon(type: string) {
+  if (type === "Panen") return "harvest" as const;
+  if (type === "Pemupukan") return "fertilizer" as const;
+  if (type === "Tenaga Kerja") return "workforce" as const;
+  if (type === "Biaya") return "budget" as const;
+  return "activity" as const;
 }
+
 
 function idDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", {
@@ -203,22 +203,22 @@ export default async function CalendarPage({
       : `/kalender?month=12`;
 
   return (
-    <div className="calendarPage">
-      <section className="calendarHeading">
-        <div>
-          <span>AGENDA OPERASIONAL</span>
-          <h1>Kalender Kebun</h1>
-          <p>
-            Kalender membaca Rencana existing. Reminder aktif di dalam aplikasi
-            sesuai tanggal rencana dan field reminder_days.
-          </p>
+    <div className="calendarPage v100CalendarPage">
+      <section className="v100CalendarHero">
+        <div className="v100CalendarHeroTop">
+          <div>
+            <span>OPERATIONAL CALENDAR</span>
+            <h1>Kalender Operasional</h1>
+            <p>Lihat agenda kebun dalam satu kalender, temukan pekerjaan yang mendekati jadwal, sebagian, atau terlambat.</p>
+          </div>
+          <ContextSelector estates={estates} selectedYear={context.selectedYear} activeEstateId={activeEstateId} />
         </div>
-
-        <ContextSelector
-          estates={estates}
-          selectedYear={context.selectedYear}
-          activeEstateId={activeEstateId}
-        />
+        <div className="v100CalendarSignals">
+          <article><small>KEBUN AKTIF</small><strong>{activeEstate?.name ?? "-"}</strong><span>{context.selectedYear}</span></article>
+          <article><small>AGENDA TAHUNAN</small><strong>{calendarRows.length}</strong><span>seluruh rencana</span></article>
+          <article><small>AGENDA BULAN INI</small><strong>{monthRows.length}</strong><span>{MONTHS[monthIndex]}</span></article>
+          <article className={reminderRows.length ? "v100SignalAlert" : ""}><small>PERLU PERHATIAN</small><strong>{reminderRows.length}</strong><span>reminder / partial / terlambat</span></article>
+        </div>
       </section>
 
       <section className="calendarKpis">
@@ -289,7 +289,7 @@ export default async function CalendarPage({
                   <div className="calendarEvents">
                     {dayRows.slice(0, 3).map((row) => (
                       <div className={`calendarEvent event-${row.status.toLowerCase().replace(" ", "-")}`} key={row.plan.id}>
-                        <span>{icon(row.plan.type)}</span>
+                        <span><AppIcon name={planIcon(row.plan.type)} /></span>
                         <b>{row.plan.type}</b>
                       </div>
                     ))}
@@ -327,7 +327,7 @@ export default async function CalendarPage({
                 .sort((a, b) => a.plan.planned_date.localeCompare(b.plan.planned_date))
                 .map((row) => (
                   <Link href={`/rencana/${row.plan.id}`} className="agendaRow" key={row.plan.id}>
-                    <span className="agendaIcon">{icon(row.plan.type)}</span>
+                    <span className="agendaIcon"><AppIcon name={planIcon(row.plan.type)} /></span>
                     <div>
                       <b>{row.plan.type} · {row.blockName}</b>
                       <small>
@@ -364,7 +364,7 @@ export default async function CalendarPage({
               {reminderRows.slice(0, 5).map((row) => (
                 <Link href={`/rencana/${row.plan.id}`} className="reminderRow" key={row.plan.id}>
                   <div>
-                    <b>{icon(row.plan.type)} {row.plan.type} · {row.blockName}</b>
+                    <b><AppIcon name={planIcon(row.plan.type)} /> {row.plan.type} · {row.blockName}</b>
                     <small>
                       Rencana {idDate(row.plan.planned_date)}
                       {row.status === "Reminder"
@@ -393,7 +393,7 @@ export default async function CalendarPage({
             <div className="upcomingList">
               {upcomingRows.map((row) => (
                 <Link href={`/rencana/${row.plan.id}`} key={row.plan.id}>
-                  <span>{icon(row.plan.type)}</span>
+                  <span><AppIcon name={planIcon(row.plan.type)} /></span>
                   <div>
                     <b>{row.plan.type} · {row.blockName}</b>
                     <small>{idDate(row.plan.planned_date)}</small>
@@ -410,7 +410,7 @@ export default async function CalendarPage({
       </section>
 
       <section className="calendarIntegrityNote">
-        <span>v8.8 CALENDAR ENGINE</span>
+        <span>v10.0 OPERATIONAL CALENDAR</span>
         <b>
           Kalender tidak membuat transaksi baru. Semua agenda berasal dari tabel plans;
           progress tetap dihitung dari actual ber-plan_id.
