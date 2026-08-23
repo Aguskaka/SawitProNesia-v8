@@ -68,6 +68,7 @@ export default async function HomePage(){
  const recent=[...harvests.filter(h=>h.estate_id===estate.id&&transactionYear(h.harvest_date)===context.selectedYear).map(h=>({id:`h-${h.id}`,icon:"🌾",title:`Panen ${estateBlocks.find(b=>b.id===h.block_id)?.name??""}`,date:h.harvest_date,value:formatCompactRupiah(Number(h.revenue??0))})),...operations.filter(o=>o.estate_id===estate.id&&transactionYear(o.op_date)===context.selectedYear).map(o=>({id:`o-${o.id}`,icon:o.type==="Pemupukan"?"🧺":o.type==="Tenaga Kerja"?"👷":"✓",title:o.description||o.type,date:o.op_date,value:formatCompactRupiah(Number(o.total_cost??0))}))].sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,5);
  const topBlock=blockProduction[0];
  const marginPct=summary.revenue>0?summary.margin/summary.revenue*100:0;
+ const isTbm=stage==="TBM";
  const overdue=attention.filter(x=>x.status==="Terlambat").length;
  const budgetConfigured=annualBudget>0;
  const overBudget=budgetConfigured&&summary.cost>annualBudget;
@@ -101,7 +102,7 @@ export default async function HomePage(){
    <article><span>PRODUKSI YTD</span><strong>{formatNumber(summary.productionKg)} Kg</strong><small>{productivity.toLocaleString("id-ID",{maximumFractionDigits:2})} ton/Ha</small></article>
    <article><span>PENDAPATAN YTD</span><strong>{formatCompactRupiah(summary.revenue)}</strong><small>{summary.productionKg>0?`${formatRupiah(summary.revenue/summary.productionKg)}/Kg`:"Belum ada panen"}</small></article>
    <article><span>BIAYA AKTUAL</span><strong>{formatCompactRupiah(summary.cost)}</strong><small>{efficiency>0?`${formatRupiah(efficiency)}/Kg`:"Biaya berjalan"}</small></article>
-   <article className={summary.margin<0?"negative":""}><span>MARGIN</span><strong>{formatCompactRupiah(summary.margin)}</strong><small>{summary.revenue>0?`${marginPct.toLocaleString("id-ID",{maximumFractionDigits:1})}%`:"Belum ada pendapatan"}</small></article>
+   <article className={!isTbm&&summary.margin<0?"negative":""}><span>MARGIN</span><strong>{isTbm?"Belum menghasilkan":formatCompactRupiah(summary.margin)}</strong><small>{isTbm?`TBM · biaya berjalan ${formatCompactRupiah(summary.cost)}`:summary.revenue>0?`${marginPct.toLocaleString("id-ID",{maximumFractionDigits:1})}%`:"Belum ada pendapatan"}</small></article>
   </section>
 
   <section className="v931PriorityGrid">
