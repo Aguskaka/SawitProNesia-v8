@@ -11,7 +11,7 @@ import { fertilizerProgramProgress } from "@/lib/calculations/fertilizer";
 import { formatCompactRupiah, formatNumber } from "@/lib/formatters";
 import { FERTILIZER_FORMULAS, TBM_MINERAL_COMPOUND, TM_MINERAL_COMPOUND } from "@/lib/fertilizer-recommendations";
 import { FertilizerProgramForm } from "@/components/fertilizer-program-form";
-import { getFertilizerWeatherForecast, isValidEstateCoordinate, weatherCodeLabel } from "@/lib/weather-fertilizer";
+import { getMultiFertilizerWeatherForecast, isValidEstateCoordinate, weatherCodeLabel } from "@/lib/weather-fertilizer";
 
 function idDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" })
@@ -22,7 +22,7 @@ function pct(actual:number, planned:number){ return planned>0 ? Math.min((actual
 export default async function FertilizerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; weatherFertilizer?: string }>;
 }) {
   const params = await searchParams;
   const supabase = await createClient();
@@ -72,21 +72,35 @@ export default async function FertilizerPage({
   const completed = rows.length-unfinished;
   const completion = pct(actualKg,plannedKg);
   const nextProgram = rows.find(r=>r.progress.status!=="Selesai") ?? rows[0] ?? null;
-  const weatherFertilizer = nextProgram?.programItems?.[0]?.fertilizer_name ?? "NPK / pupuk majemuk";
+  const weatherFertilizers = Array.from(new Set(
+    rows.flatMap((row) => row.programItems.map((item) => String(item.fertilizer_name ?? "").trim())).filter(Boolean),
+  ));
+  const requestedWeatherFertilizer = params.weatherFertilizer?.trim() || "ALL";
+  const selectedWeatherFertilizer = requestedWeatherFertilizer !== "ALL" && weatherFertilizers.includes(requestedWeatherFertilizer)
+    ? requestedWeatherFertilizer
+    : "ALL";
   const hasCoordinates = Boolean(estate && isValidEstateCoordinate(estate.latitude, estate.longitude));
   let weather = null;
   let weatherError: string | null = null;
   if (estate && hasCoordinates) {
     try {
-      weather = await getFertilizerWeatherForecast({
+      weather = await getMultiFertilizerWeatherForecast({
         latitude: Number(estate.latitude),
         longitude: Number(estate.longitude),
-        fertilizerName: weatherFertilizer,
+        fertilizerNames: weatherFertilizers,
       });
     } catch (error) {
       weatherError = error instanceof Error ? error.message : "Prakiraan cuaca belum tersedia.";
     }
   }
+  const selectedForecast = weather && selectedWeatherFertilizer !== "ALL"
+    ? weather.fertilizers.find((item) => item.fertilizer === selectedWeatherFertilizer) ?? weather.fertilizers[0]
+    : null;
+  const restrictiveForecast = weather
+    ? weather.fertilizers.reduce((worst, item) => item.today.score < worst.today.score ? item : worst, weather.fertilizers[0])
+    : null;
+  const detailForecast = selectedForecast ?? restrictiveForecast;
+  const detailToday = selectedForecast?.today ?? detailForecast?.today ?? null;
 
   return (
     <div className="fertPage v97FertPage">
@@ -126,24 +140,44 @@ export default async function FertilizerPage({
           <div className="v106WeatherMissing"><i><AppIcon name="estate"/></i><div><b>Koordinat kebun belum tersedia — lengkapi lokasi kebun</b><span>Nilai kosong, tidak valid, atau 0,0 tidak akan dipakai untuk forecast. Sistem tidak akan membuat skor maupun rekomendasi sampai latitude dan longitude kebun valid.</span></div>{estate ? <Link href={`/kebun/${estate.id}`}>Lengkapi koordinat →</Link> : null}</div>
         ) : weatherError ? (
           <div className="v106WeatherMissing warning"><i><AppIcon name="weather"/></i><div><b>Prakiraan cuaca belum dapat dimuat</b><span>{weatherError} Data operasional lain tetap dapat digunakan seperti biasa.</span></div></div>
-        ) : weather ? (
+        ) : weather && detailForecast && detailToday ? (
           <>
+            <div className="v1062FertilizerChooser">
+              <div><span>ACUAN PUPUK CUACA</span><strong>{selectedWeatherFertilizer === "ALL" ? "Semua pupuk dalam program" : selectedWeatherFertilizer}</strong><small>Skor dihitung ulang untuk karakter masing-masing pupuk menggunakan forecast cuaca yang sama.</small></div>
+              <nav aria-label="Pilih acuan pupuk untuk rekomendasi cuaca">
+                <Link className={selectedWeatherFertilizer === "ALL" ? "active" : ""} href="/pupuk#weather-window">Semua Pupuk</Link>
+                {weather.fertilizers.map((item) => <Link className={selectedWeatherFertilizer === item.fertilizer ? "active" : ""} href={`/pupuk?weatherFertilizer=${encodeURIComponent(item.fertilizer)}#weather-window`} key={item.fertilizer}>{item.fertilizer}</Link>)}
+              </nav>
+            </div>
+
+            {selectedWeatherFertilizer === "ALL" ? <div className="v1062FertilizerMatrix">
+              {weather.fertilizers.map((item) => <Link href={`/pupuk?weatherFertilizer=${encodeURIComponent(item.fertilizer)}#weather-window`} className={`v1062FertilizerCard ${item.today.status.toLowerCase()}`} key={item.fertilizer}>
+                <div><small>{item.fertilizerGroup}</small><strong>{item.fertilizer}</strong></div>
+                <b>{item.today.status}</b><em>{item.today.score}/100</em>
+                <span>Terbaik: {idDate(item.bestDay.date)} · {item.bestDay.score}/100</span>
+              </Link>)}
+            </div> : null}
+
             <div className="v106TodayGrid">
-              <article className={`v106TodayDecision ${weather.today.status.toLowerCase()}`}>
-                <div className="v106DecisionTop"><span>REKOMENDASI HARI INI</span><b>{weather.today.status}</b></div>
-                <strong>{weather.today.status === "Layak" ? "Pemupukan dapat diprioritaskan" : weather.today.status === "Waspada" ? "Bisa dilakukan dengan pengawasan cuaca" : "Sebaiknya tunda pemupukan"}</strong>
-                <p>{weather.today.reasons.slice(0,2).join(" ")}</p>
-                <div className="v106DecisionMetrics"><span><small>SKOR</small><b>{weather.today.score}/100</b></span><span><small>HUJAN</small><b>{formatNumber(Math.max(weather.today.rainMm, weather.today.precipitationMm),1)} mm</b></span><span><small>6 JAM</small><b>{formatNumber(weather.today.next6hPrecipitationMm,1)} mm</b></span><span><small>SUHU</small><b>{formatNumber(weather.today.temperatureMax,0)}°C</b></span></div>
+              <article className={`v106TodayDecision ${(selectedForecast?.today.status ?? weather.overallToday.status).toLowerCase()}`}>
+                <div className="v106DecisionTop"><span>{selectedWeatherFertilizer === "ALL" ? "REKOMENDASI HARI INI · SEMUA PUPUK" : `REKOMENDASI HARI INI · ${detailForecast.fertilizer}`}</span><b>{selectedForecast?.today.status ?? weather.overallToday.status}</b></div>
+                <strong>{(selectedForecast?.today.status ?? weather.overallToday.status) === "Layak" ? "Pemupukan dapat diprioritaskan" : (selectedForecast?.today.status ?? weather.overallToday.status) === "Waspada" ? "Bisa dilakukan dengan pengawasan cuaca" : "Sebaiknya tunda pemupukan"}</strong>
+                <p>{selectedWeatherFertilizer === "ALL" ? `Status mengikuti pupuk paling sensitif hari ini: ${weather.overallToday.restrictiveFertilizer}. ${weather.overallToday.reasons.slice(0,2).join(" ")}` : detailToday.reasons.slice(0,2).join(" ")}</p>
+                <div className="v106DecisionMetrics"><span><small>SKOR</small><b>{selectedForecast?.today.score ?? weather.overallToday.score}/100</b></span><span><small>HUJAN</small><b>{formatNumber(Math.max(detailToday.rainMm, detailToday.precipitationMm),1)} mm</b></span><span><small>6 JAM</small><b>{formatNumber(detailToday.next6hPrecipitationMm,1)} mm</b></span><span><small>SUHU</small><b>{formatNumber(detailToday.temperatureMax,0)}°C</b></span></div>
               </article>
               <article className="v106BestWindow">
-                <span>JENDELA TERBAIK 7 HARI</span><strong>{idDate(weather.bestDay.date)}</strong><b>{weather.bestDay.status} · Skor {weather.bestDay.score}/100</b><p>{weather.bestDay.reasons[0]}</p><div><small>ACUAN PUPUK</small><em>{weather.fertilizer}</em></div>
+                <span>{selectedWeatherFertilizer === "ALL" ? "JENDELA TERBAIK BERSAMA 7 HARI" : "JENDELA TERBAIK 7 HARI"}</span>
+                <strong>{idDate(selectedForecast ? selectedForecast.bestDay.date : weather.commonBestDay.date)}</strong>
+                <b>{selectedForecast ? `${selectedForecast.bestDay.status} · Skor ${selectedForecast.bestDay.score}/100` : `${weather.commonBestDay.status} · Skor minimum ${weather.commonBestDay.score}/100`}</b>
+                <p>{selectedForecast ? selectedForecast.bestDay.reasons[0] : `Hari terbaik bila seluruh pupuk dipertimbangkan bersama. Pupuk pembatas: ${weather.commonBestDay.restrictiveFertilizer}; skor rata-rata ${weather.commonBestDay.averageScore}/100.`}</p>
+                <div><small>ACUAN PUPUK</small><em>{selectedForecast ? selectedForecast.fertilizer : `${weather.fertilizers.length} jenis pupuk program`}</em></div>
               </article>
               <article className="v106WeatherContext">
-                <span>KONTEKS AGRONOMI</span><strong>{weatherCodeLabel(weather.today.weatherCode)}</strong><p>Hujan kemarin {formatNumber(weather.previousDayRainMm,1)} mm · RH rata-rata {formatNumber(weather.today.humidityMean,0)}% · gust {formatNumber(weather.today.windGustMax,0)} km/jam · ET₀ {formatNumber(weather.today.et0Mm,1)} mm. {weather.today.soilMoistureTopMean !== null ? `Kelembapan tanah atas ${formatNumber(weather.today.soilMoistureTopMean,2)} m³/m³. ` : ""}{weather.fertilizerGroup === "UREA" ? "Urea lebih sensitif terhadap kondisi panas/kering dan hujan lebat." : weather.fertilizerGroup === "DOLOMIT" ? "Dolomit diprioritaskan pada jendela yang relatif lebih kering." : "NPK/KCl diprioritaskan saat risiko runoff dan pencucian rendah."}</p><small>Sumber: Open-Meteo 7 hari + BMKG Nowcast · {weather.bmkg.checked ? (weather.bmkg.activeWarning ? "peringatan BMKG aktif" : "tidak ada warning BMKG pada titik kebun") : "BMKG sementara tidak dapat diverifikasi"}</small>
+                <span>KONTEKS AGRONOMI</span><strong>{weatherCodeLabel(detailToday.weatherCode)}</strong><p>Hujan kemarin {formatNumber(weather.previousDayRainMm,1)} mm · RH rata-rata {formatNumber(detailToday.humidityMean,0)}% · gust {formatNumber(detailToday.windGustMax,0)} km/jam · ET₀ {formatNumber(detailToday.et0Mm,1)} mm. {detailToday.soilMoistureTopMean !== null ? `Kelembapan tanah atas ${formatNumber(detailToday.soilMoistureTopMean,2)} m³/m³. ` : ""}{selectedWeatherFertilizer === "ALL" ? "Setiap pupuk mendapat penalti/bonus berbeda; Urea lebih sensitif terhadap panas dan tanah kering, sedangkan NPK/KCl lebih sensitif terhadap runoff/pencucian." : detailForecast.fertilizerGroup === "UREA" ? "Urea lebih sensitif terhadap kondisi panas/kering dan hujan lebat." : detailForecast.fertilizerGroup === "DOLOMIT" ? "Dolomit diprioritaskan pada jendela yang relatif lebih kering." : "NPK/KCl diprioritaskan saat risiko runoff dan pencucian rendah."}</p><small>Sumber: Open-Meteo 7 hari + BMKG Nowcast · {weather.bmkg.checked ? (weather.bmkg.activeWarning ? "peringatan BMKG aktif" : "tidak ada warning BMKG pada titik kebun") : "BMKG sementara tidak dapat diverifikasi"}</small>
               </article>
             </div>
             <div className="v106ForecastStrip">
-              {weather.days.map((day,index)=><article className={`v106ForecastDay ${day.status.toLowerCase()}`} key={day.date}>
+              {(selectedForecast ? selectedForecast.days : weather.commonDays.map((common, index) => ({ ...detailForecast.days[index], ...common }))).map((day,index)=><article className={`v106ForecastDay ${day.status.toLowerCase()}`} key={day.date}>
                 <div><small>{index===0 ? "HARI INI" : new Intl.DateTimeFormat("id-ID",{weekday:"short"}).format(new Date(`${day.date}T00:00:00`))}</small><strong>{new Intl.DateTimeFormat("id-ID",{day:"2-digit",month:"short"}).format(new Date(`${day.date}T00:00:00`))}</strong></div>
                 <i><AppIcon name="weather"/></i>
                 <b>{day.status}</b><span>Skor {day.score}</span>
@@ -151,7 +185,7 @@ export default async function FertilizerPage({
               </article>)}
             </div>
             {weather.bmkg.activeWarning ? <div className="v106BmkgAlert"><b>BMKG SAFETY OVERRIDE — TUNDA</b><span>{weather.bmkg.headline ?? weather.bmkg.event ?? "Peringatan dini cuaca aktif pada titik kebun."} {weather.bmkg.expires ? `Berlaku hingga ${new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(new Date(weather.bmkg.expires))}.` : ""}</span></div> : null}
-            <div className="v106WeatherNote"><b>Catatan keputusan:</b><span>Skor adalah decision-support. Hard-stop diterapkan untuk warning BMKG, badai petir, hujan harian/6-jam berisiko tinggi, atau hembusan angin ekstrem. Inspeksi genangan, kondisi tanah, dan kondisi aktual lapangan tetap wajib sebelum aplikasi.</span></div>
+            <div className="v106WeatherNote"><b>Catatan keputusan:</b><span>Mode Semua Pupuk memakai prinsip konservatif: status harian mengikuti skor terendah dari seluruh pupuk program. Pilih satu pupuk untuk melihat rekomendasi spesifik. Hard-stop BMKG dan risiko cuaca ekstrem tetap berlaku untuk seluruh jenis pupuk.</span></div>
           </>
         ) : null}
       </section>

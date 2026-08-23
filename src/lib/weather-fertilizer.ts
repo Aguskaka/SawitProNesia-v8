@@ -35,12 +35,14 @@ export type FertilizerWeatherDay = WeatherDay & {
   hardStops: string[];
 };
 
+export type FertilizerGroup = "UREA" | "NPK" | "KCL" | "DOLOMIT" | "LAINNYA";
+
 export type FertilizerWeatherForecast = {
   latitude: number;
   longitude: number;
   timezone: string;
   fertilizer: string;
-  fertilizerGroup: "UREA" | "NPK" | "KCL" | "DOLOMIT" | "LAINNYA";
+  fertilizerGroup: FertilizerGroup;
   generatedAt: string;
   days: FertilizerWeatherDay[];
   today: FertilizerWeatherDay;
@@ -135,7 +137,7 @@ function localHourKey(timeZone: string) {
   return `${value("year")}-${value("month")}-${value("day")}T${value("hour")}:00`;
 }
 
-function fertilizerGroup(name: string): FertilizerWeatherForecast["fertilizerGroup"] {
+export function fertilizerGroup(name: string): FertilizerGroup {
   const n = name.toLowerCase();
   if (n.includes("urea")) return "UREA";
   if (n.includes("kcl") || n.includes("mop") || n.includes("kalium")) return "KCL";
@@ -174,7 +176,7 @@ function dailyHourlyAggregate(hourly: OpenMeteoHourly | undefined, date: string,
 function evaluateDay(
   day: WeatherDay,
   previousRain: number,
-  group: FertilizerWeatherForecast["fertilizerGroup"],
+  group: FertilizerGroup,
   bmkgWarning = false,
 ): FertilizerWeatherDay {
   let score = 100;
@@ -372,19 +374,66 @@ async function getBmkgNowcast(latitude: number, longitude: number): Promise<Bmkg
   }
 }
 
-export async function getFertilizerWeatherForecast(input: {
+type WeatherBase = {
   latitude: number;
   longitude: number;
-  fertilizerName?: string | null;
-}): Promise<FertilizerWeatherForecast> {
-  const latitude = Number(input.latitude);
-  const longitude = Number(input.longitude);
+  timezone: string;
+  generatedAt: string;
+  rawDays: WeatherDay[];
+  previousDayRainMm: number;
+  bmkg: BmkgNowcast;
+};
+
+export type MultiFertilizerWeatherForecast = {
+  latitude: number;
+  longitude: number;
+  timezone: string;
+  generatedAt: string;
+  fertilizers: FertilizerWeatherForecast[];
+  overallToday: {
+    score: number;
+    status: FertilizerWeatherStatus;
+    restrictiveFertilizer: string;
+    reasons: string[];
+  };
+  commonDays: Array<{
+    date: string;
+    score: number;
+    status: FertilizerWeatherStatus;
+    averageScore: number;
+    restrictiveFertilizer: string;
+  }>;
+  commonBestDay: {
+    date: string;
+    score: number;
+    status: FertilizerWeatherStatus;
+    averageScore: number;
+    restrictiveFertilizer: string;
+  };
+  previousDayRainMm: number;
+  bmkg: BmkgNowcast;
+  source: "Open-Meteo + BMKG";
+};
+
+function normalizeFertilizers(values: Array<string | null | undefined>) {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const value of values) {
+    const clean = String(value ?? "").trim().replace(/\s+/g, " ");
+    if (!clean) continue;
+    const key = clean.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(clean);
+  }
+  return result.length ? result : ["NPK / pupuk majemuk"];
+}
+
+async function getWeatherBase(latitude: number, longitude: number): Promise<WeatherBase> {
   if (!validCoordinate(latitude, longitude)) {
     throw new Error("Koordinat kebun belum valid. Isi latitude dan longitude kebun sebelum menggunakan rekomendasi cuaca.");
   }
 
-  const fertilizer = input.fertilizerName?.trim() || "NPK / pupuk majemuk";
-  const group = fertilizerGroup(fertilizer);
   const params = new URLSearchParams({
     latitude: String(latitude),
     longitude: String(longitude),
@@ -436,27 +485,105 @@ export async function getFertilizerWeatherForecast(input: {
   const rawDays = Array.from({ length: 7 }, (_, offset) => getDay(
     data.daily!, data.hourly, Math.min(todayIndex + offset, data.daily!.time!.length - 1), currentHourKey,
   ));
-  const days = rawDays.map((day, index) => evaluateDay(
-    day,
-    index === 0 ? previousDayRainMm : Math.max(rawDays[index - 1]?.rainMm ?? 0, rawDays[index - 1]?.precipitationMm ?? 0),
-    group,
-    index === 0 && bmkg.activeWarning,
-  ));
-  const today = days[0];
-  const bestDay = days.reduce((best, day) => day.score > best.score ? day : best, days[0]);
 
   return {
     latitude: Number(data.latitude ?? latitude),
     longitude: Number(data.longitude ?? longitude),
     timezone,
+    generatedAt: new Date().toISOString(),
+    rawDays,
+    previousDayRainMm,
+    bmkg,
+  };
+}
+
+function forecastForFertilizer(base: WeatherBase, fertilizer: string): FertilizerWeatherForecast {
+  const group = fertilizerGroup(fertilizer);
+  const days = base.rawDays.map((day, index) => evaluateDay(
+    day,
+    index === 0
+      ? base.previousDayRainMm
+      : Math.max(base.rawDays[index - 1]?.rainMm ?? 0, base.rawDays[index - 1]?.precipitationMm ?? 0),
+    group,
+    index === 0 && base.bmkg.activeWarning,
+  ));
+  const today = days[0];
+  const bestDay = days.reduce((best, day) => day.score > best.score ? day : best, days[0]);
+
+  return {
+    latitude: base.latitude,
+    longitude: base.longitude,
+    timezone: base.timezone,
     fertilizer,
     fertilizerGroup: group,
-    generatedAt: new Date().toISOString(),
+    generatedAt: base.generatedAt,
     days,
     today,
     bestDay,
-    previousDayRainMm,
-    bmkg,
+    previousDayRainMm: base.previousDayRainMm,
+    bmkg: base.bmkg,
     source: "Open-Meteo + BMKG",
   };
+}
+
+export async function getMultiFertilizerWeatherForecast(input: {
+  latitude: number;
+  longitude: number;
+  fertilizerNames: Array<string | null | undefined>;
+}): Promise<MultiFertilizerWeatherForecast> {
+  const latitude = Number(input.latitude);
+  const longitude = Number(input.longitude);
+  const base = await getWeatherBase(latitude, longitude);
+  const names = normalizeFertilizers(input.fertilizerNames);
+  const fertilizers = names.map((name) => forecastForFertilizer(base, name));
+
+  const restrictiveToday = fertilizers.reduce((worst, item) => item.today.score < worst.today.score ? item : worst, fertilizers[0]);
+  const commonCandidates = base.rawDays.map((day, index) => {
+    const ranked = fertilizers.map((item) => ({ fertilizer: item.fertilizer, score: item.days[index].score }));
+    const restrictive = ranked.reduce((worst, item) => item.score < worst.score ? item : worst, ranked[0]);
+    const averageScore = Math.round(ranked.reduce((sum, item) => sum + item.score, 0) / Math.max(ranked.length, 1));
+    return {
+      date: day.date,
+      score: restrictive.score,
+      status: classify(restrictive.score),
+      averageScore,
+      restrictiveFertilizer: restrictive.fertilizer,
+    };
+  });
+  const commonBestDay = commonCandidates.reduce((best, item) => {
+    if (item.score !== best.score) return item.score > best.score ? item : best;
+    return item.averageScore > best.averageScore ? item : best;
+  }, commonCandidates[0]);
+
+  return {
+    latitude: base.latitude,
+    longitude: base.longitude,
+    timezone: base.timezone,
+    generatedAt: base.generatedAt,
+    fertilizers,
+    commonDays: commonCandidates,
+    overallToday: {
+      score: restrictiveToday.today.score,
+      status: restrictiveToday.today.status,
+      restrictiveFertilizer: restrictiveToday.fertilizer,
+      reasons: restrictiveToday.today.reasons,
+    },
+    commonBestDay,
+    previousDayRainMm: base.previousDayRainMm,
+    bmkg: base.bmkg,
+    source: "Open-Meteo + BMKG",
+  };
+}
+
+export async function getFertilizerWeatherForecast(input: {
+  latitude: number;
+  longitude: number;
+  fertilizerName?: string | null;
+}): Promise<FertilizerWeatherForecast> {
+  const multi = await getMultiFertilizerWeatherForecast({
+    latitude: input.latitude,
+    longitude: input.longitude,
+    fertilizerNames: [input.fertilizerName?.trim() || "NPK / pupuk majemuk"],
+  });
+  return multi.fertilizers[0];
 }
