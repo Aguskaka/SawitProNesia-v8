@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { ensureManagementAccess } from "@/lib/auth/access";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getAppContext } from "@/lib/context/server-context";
@@ -10,6 +11,7 @@ import { createEstate } from "@/features/estates/actions";
 import { AppIcon } from "@/components/layout/app-icons";
 
 export default async function EstatesPage() {
+  await ensureManagementAccess();
   const supabase = await createClient();
   const context = await getAppContext();
   const [estateResult, blockResult] = await Promise.all([

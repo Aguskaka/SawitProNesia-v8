@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { ensureManagementAccess } from "@/lib/auth/access";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getAppContext } from "@/lib/context/server-context";
@@ -17,6 +18,7 @@ function idDate(value: string) {
 const MONTHS = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
 
 export default async function WorkforcePage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  await ensureManagementAccess();
   const params = await searchParams;
   const supabase = await createClient();
   const context = await getAppContext();

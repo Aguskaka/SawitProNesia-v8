@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { ensureManagementAccess } from "@/lib/auth/access";
 import { createClient } from "@/lib/supabase/server";
 import { getAppContext } from "@/lib/context/server-context";
 import { ContextSelector } from "@/components/layout/context-selector";
@@ -21,6 +22,7 @@ function pct(value: number) {
 }
 
 export default async function AnalyticsPage() {
+  await ensureManagementAccess();
   const supabase = await createClient();
   const context = await getAppContext();
 

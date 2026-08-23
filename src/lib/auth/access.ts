@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export type AppRole = "owner" | "admin" | "mandor" | "pemanen" | "viewer";
 
@@ -85,6 +86,18 @@ export async function assertHarvestDeleteAccess() {
   const access = await getCurrentAccess();
   if (!access || !canDeleteHarvest(access)) {
     throw new Error("Hanya Owner/Admin yang dapat menghapus transaksi panen.");
+  }
+  return access;
+}
+
+/** v11 production hardening: management pages must not render for Pemanen.
+ * RLS remains the database enforcement layer; this provides server-side UX enforcement.
+ */
+export async function ensureManagementAccess() {
+  const access = await getCurrentAccess();
+  if (!access) throw new Error("Sesi login tidak valid.");
+  if (access.role === "pemanen") {
+    redirect("/panen");
   }
   return access;
 }

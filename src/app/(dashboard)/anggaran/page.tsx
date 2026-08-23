@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { ensureManagementAccess } from "@/lib/auth/access";
 import type { CSSProperties } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getAppContext } from "@/lib/context/server-context";
@@ -14,6 +15,7 @@ const CATEGORIES=["Pemupukan","Perawatan","Penyemprotan","Tenaga Kerja","Biaya",
 const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
 
 export default async function BudgetPage({searchParams}:{searchParams:Promise<{status?:string}>}) {
+  await ensureManagementAccess();
  const params=await searchParams,supabase=await createClient(),context=await getAppContext();
  const [er,br,or,abr,acr,bbr]=await Promise.all([
   supabase.from("estates").select("id,name").order("created_at"),

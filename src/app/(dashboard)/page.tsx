@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { ensureManagementAccess } from "@/lib/auth/access";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getAppContext } from "@/lib/context/server-context";
@@ -19,6 +20,7 @@ const MONTHS=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov",
 function idDate(value:string|null){if(!value)return "-";return new Intl.DateTimeFormat("id-ID",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(`${value.slice(0,10)}T00:00:00`));}
 
 export default async function HomePage(){
+ await ensureManagementAccess();
  const supabase=await createClient(),context=await getAppContext();
  const [er,br,hr,or,pr,abr,fpr,fpir,fer,feir]=await Promise.all([
   supabase.from("estates").select("*").order("created_at"),

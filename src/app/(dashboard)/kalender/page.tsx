@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { ensureManagementAccess } from "@/lib/auth/access";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getAppContext } from "@/lib/context/server-context";
@@ -78,6 +79,7 @@ export default async function CalendarPage({
 }: {
   searchParams: Promise<{ month?: string; date?: string }>;
 }) {
+  await ensureManagementAccess();
   const params = await searchParams;
   const supabase = await createClient();
   const context = await getAppContext();

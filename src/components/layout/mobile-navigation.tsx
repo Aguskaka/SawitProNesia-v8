@@ -21,7 +21,7 @@ export function MobileNavigation({ role }: { role: string }){
   <nav className="mobileBottomNav" aria-label="Navigasi utama">
    <Link href="/" className={active("/")?"active":""} aria-current={active("/")?"page":undefined}><AppIcon name="home"/><span>Beranda</span></Link>
    <Link href="/kalender" className={active("/kalender")?"active":""} aria-current={active("/kalender")?"page":undefined}><AppIcon name="calendar"/><span>Kalender</span></Link>
-   <button type="button" className="mobileFab" onClick={()=>setOpen(true)} aria-label="Buka akses cepat" aria-expanded={open}><AppIcon name="plus"/><span>Aksi</span></button>
+   <button type="button" className="mobileFab" onClick={()=>setOpen(true)} aria-label="Buka akses cepat" title="Akses cepat" aria-expanded={open}><AppIcon name="plus"/></button>
    <Link href="/rencana" className={active("/rencana")?"active":""} aria-current={active("/rencana")?"page":undefined}><AppIcon name="plan"/><span>Rencana</span></Link>
    <Link href="/kebun" className={active("/kebun")?"active":""} aria-current={active("/kebun")?"page":undefined}><AppIcon name="estate"/><span>Kebun</span></Link>
   </nav>
