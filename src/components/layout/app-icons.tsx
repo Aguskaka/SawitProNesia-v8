@@ -1,6 +1,6 @@
 import type { ReactNode, SVGProps } from "react";
 
-type IconName = "home"|"calendar"|"plus"|"plan"|"estate"|"harvest"|"activity"|"fertilizer"|"workforce"|"report"|"analytics"|"budget"|"user";
+type IconName = "home"|"calendar"|"plus"|"plan"|"estate"|"harvest"|"activity"|"fertilizer"|"workforce"|"report"|"analytics"|"budget"|"user"|"weather";
 const paths: Record<IconName, ReactNode> = {
  home:<><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></>,
  calendar:<><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></>,
@@ -14,6 +14,7 @@ const paths: Record<IconName, ReactNode> = {
  report:<><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h6M9 16h6"/></>,
  analytics:<><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></>,
  budget:<><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M16 11h5v5h-5a2.5 2.5 0 0 1 0-5ZM7 6V4h10v2"/></>,
- user:<><circle cx="12" cy="8" r="4"/><path d="M5 21c.5-5 2.8-7 7-7s6.5 2 7 7"/></>
+ user:<><circle cx="12" cy="8" r="4"/><path d="M5 21c.5-5 2.8-7 7-7s6.5 2 7 7"/></>,
+ weather:<><path d="M8 17h9a4 4 0 0 0 .3-8 5.5 5.5 0 0 0-10.6 1.7A3.2 3.2 0 0 0 8 17Z"/><path d="M7 21l1-2M12 21l1-2M17 21l1-2"/></>
 };
 export function AppIcon({name,...props}:{name:IconName}&SVGProps<SVGSVGElement>){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{paths[name]}</svg>}
