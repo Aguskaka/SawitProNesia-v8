@@ -14,9 +14,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <main className="loginPage">
       <section className="loginCard">
         <div className="brandMark">🌴</div>
-        <p className="eyebrow">SAWITPRONESIA v8</p>
+        <p className="eyebrow">SAWITPRONESIA v10.7</p>
         <h1>Masuk ke Kebun Anda</h1>
-        <p className="muted">Foundation native Next.js + TypeScript dengan Supabase existing.</p>
+        <p className="muted">Kelola kebun dan pencatatan lapangan dengan akses sesuai peran pengguna.</p>
 
         <form action={login} className="loginForm">
           <label>

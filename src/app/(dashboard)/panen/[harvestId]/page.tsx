@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAccess } from "@/lib/auth/access";
 import { getAppContext } from "@/lib/context/server-context";
 import {
   calculateBjr,
@@ -36,6 +37,8 @@ export default async function HarvestDetail({
 }) {
   const { harvestId } = await params;
   const query = await searchParams;
+  const access = await getCurrentAccess();
+  if (access?.role === "pemanen") redirect("/panen");
   const supabase = await createClient();
   const context = await getAppContext();
 

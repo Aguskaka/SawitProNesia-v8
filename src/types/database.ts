@@ -875,7 +875,20 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      spn_current_access: {
+        Args: Record<PropertyKey, never>;
+        Returns: { role: string; estate_id: string | null }[];
+      };
+      spn_assign_member_by_email: {
+        Args: { p_email: string; p_role: string; p_estate_id: string | null };
+        Returns: string;
+      };
+      spn_list_workspace_members: {
+        Args: Record<PropertyKey, never>;
+        Returns: { id: string; email: string; role: string; estate_id: string | null; status: string }[];
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

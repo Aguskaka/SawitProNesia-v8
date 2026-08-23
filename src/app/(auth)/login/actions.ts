@@ -23,7 +23,9 @@ export async function login(formData: FormData) {
   // make the first authenticated render use the newly-written auth cookies,
   // not a previously cached anonymous layout.
   revalidatePath("/", "layout");
-  redirect("/");
+  const { data: accessRows } = await supabase.rpc("spn_current_access");
+  const access = Array.isArray(accessRows) ? accessRows[0] : null;
+  redirect(access?.role === "pemanen" ? "/panen" : "/");
 }
 
 export async function logout() {

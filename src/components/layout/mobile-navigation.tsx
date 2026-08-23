@@ -11,14 +11,11 @@ const quick = [
  ["/anggaran","budget","Anggaran","Budget & kontrol biaya"]
 ] as const;
 
-const bottom = [
- ["/","home","Beranda"], ["/kalender","calendar","Kalender"], ["/rencana","plan","Rencana"], ["/kebun","estate","Kebun"]
-] as const;
-
-export function MobileNavigation(){
+export function MobileNavigation({ role }: { role: string }){
  const [open,setOpen]=useState(false);
  const pathname=usePathname();
  const active=(href:string)=>href==="/"?pathname==="/":pathname===href||pathname.startsWith(`${href}/`);
+ if(role==="pemanen") return <nav className="mobileBottomNav pemanenBottomNav" aria-label="Navigasi Pemanen"><Link href="/panen" className="active" aria-current="page"><AppIcon name="harvest"/><span>Catat Panen</span></Link><span className="pemanenNavNote">Mode lapangan · akses terbatas</span></nav>;
  return <>
   {open&&<div className="quickMenuBackdrop" onClick={()=>setOpen(false)} role="presentation"><section className="quickMenuSheet" onClick={e=>e.stopPropagation()} aria-label="Akses cepat"><div className="quickMenuHandle"/><header><div><small>AKSI CEPAT</small><h2>Akses Cepat</h2><p>Catat pekerjaan atau buka informasi utama kebun.</p></div><button type="button" onClick={()=>setOpen(false)} aria-label="Tutup">×</button></header><div className="quickMenuGrid">{quick.map(([href,icon,label,sub])=><Link href={href} key={href} onClick={()=>setOpen(false)}><i><AppIcon name={icon}/></i><span><b>{label}</b><small>{sub}</small></span></Link>)}</div></section></div>}
   <nav className="mobileBottomNav" aria-label="Navigasi utama">

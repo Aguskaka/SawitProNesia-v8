@@ -83,3 +83,6 @@ Native Kalender Kebun + in-app Reminder from existing Plans. See `docs/V8_8_KALE
 
 ## v9.0
 Complete Functional Build: fertilizer programs, workforce/HOK, budgets, reliability hardening, and all previous modules retained. See `docs/V9_0_COMPLETE_FUNCTIONAL_BUILD.md`.
+
+## v10.7 — Role Access & Pemanen Mode
+Patch ini menambahkan role `pemanen`, UI input panen khusus lapangan, menu Akses Pengguna untuk Owner, dan RLS database. Jalankan migration `supabase/migrations/20260823_v10_7_role_access_pemanen.sql` di Supabase SQL Editor sebelum menguji akun Pemanen.

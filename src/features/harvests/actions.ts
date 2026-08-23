@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { calculateHarvestRevenue } from "@/lib/calculations/harvest";
+import { assertHarvestCreateAccess, assertHarvestDeleteAccess, assertHarvestEditAccess } from "@/lib/auth/access";
 
 function text(formData: FormData, key: string) {
   const value = String(formData.get(key) ?? "").trim();
@@ -67,10 +68,13 @@ export async function createHarvest(formData: FormData) {
   const { supabase, userId } = await session();
 
   const estateId = requiredText(formData, "estate_id", "Kebun");
+  const access = await assertHarvestCreateAccess(estateId);
   const blockId = requiredText(formData, "block_id", "Blok");
   const harvestDate = requiredText(formData, "harvest_date", "Tanggal panen");
   const selectedYear = Number(requiredText(formData, "selected_year", "Tahun Global"));
   const source = requiredText(formData, "source", "Sumber panen") === "PLAN" ? "PLAN" : "DIRECT";
+
+  if (access.role === "pemanen" && source !== "DIRECT") throw new Error("Pemanen hanya dapat mencatat Panen DIRECT.");
 
   if (dateYear(harvestDate) !== selectedYear) {
     throw new Error(`Tanggal panen harus berada pada Tahun Global ${selectedYear}.`);
@@ -129,6 +133,7 @@ export async function createHarvest(formData: FormData) {
 
 export async function updateHarvestActual(harvestId: string, formData: FormData) {
   const { supabase } = await session();
+  await assertHarvestEditAccess();
 
   const { data: existing, error: readError } = await supabase
     .from("harvests")
@@ -197,6 +202,7 @@ export async function updateHarvestActual(harvestId: string, formData: FormData)
 
 export async function deleteHarvestActual(harvestId: string) {
   const { supabase } = await session();
+  await assertHarvestDeleteAccess();
 
   const { data: existing, error: readError } = await supabase
     .from("harvests")

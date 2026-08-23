@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAccess } from "@/lib/auth/access";
 import { getAppContext } from "@/lib/context/server-context";
 import { getHarvestPlanProgress } from "@/lib/calculations/harvest";
 import { formatNumber } from "@/lib/formatters";
@@ -23,6 +24,8 @@ export default async function RealizeHarvestPlan({
   params: Promise<{ planId: string }>;
 }) {
   const { planId } = await params;
+  const access = await getCurrentAccess();
+  if (access?.role === "pemanen") redirect("/panen");
   const supabase = await createClient();
   const context = await getAppContext();
 

@@ -5,14 +5,13 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentAccess } from "@/lib/auth/access";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  return <DashboardShell>{children}</DashboardShell>;
+  const access = await getCurrentAccess();
+  return <DashboardShell role={access?.role ?? "viewer"}>{children}</DashboardShell>;
 }

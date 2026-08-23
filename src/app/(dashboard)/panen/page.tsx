@@ -9,6 +9,7 @@ import { formatCompactRupiah, formatNumber } from "@/lib/formatters";
 import { ContextSelector } from "@/components/layout/context-selector";
 import { AppIcon } from "@/components/layout/app-icons";
 import { createHarvest } from "@/features/harvests/actions";
+import { getCurrentAccess } from "@/lib/auth/access";
 
 function idDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T00:00:00`));
@@ -24,6 +25,50 @@ export default async function HarvestPage({ searchParams }: { searchParams: Prom
   const params = await searchParams;
   const supabase = await createClient();
   const context = await getAppContext();
+  const access = await getCurrentAccess();
+
+  if (access?.role === "pemanen") {
+    const [estateResult, blockResult, receiptResult] = await Promise.all([
+      supabase.from("estates").select("id,name").order("name"),
+      supabase.from("blocks").select("id,estate_id,name").order("name"),
+      supabase.from("harvests").select("id,harvest_date,weight_kg,bunches,block_id,created_at").order("created_at", { ascending: false }).limit(5),
+    ]);
+    if (estateResult.error) throw new Error(estateResult.error.message);
+    if (blockResult.error) throw new Error(blockResult.error.message);
+    if (receiptResult.error) throw new Error(receiptResult.error.message);
+
+    const estates = estateResult.data ?? [];
+    const assignedEstate = estates.find((item) => item.id === access.estateId) ?? estates[0] ?? null;
+    const blocks = (blockResult.data ?? []).filter((item) => item.estate_id === assignedEstate?.id);
+    const receipts = receiptResult.data ?? [];
+    const today = new Date();
+    const defaultDate = today.getFullYear() === context.selectedYear
+      ? `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`
+      : `${context.selectedYear}-01-01`;
+
+    return <div className="pemanenModePage">
+      <section className="pemanenHero"><span>MODE PEMANEN · AKSES TERBATAS</span><h1>Catat Hasil Panen</h1><p>Input hasil timbang TBS dari kebun tugas Anda. Data langsung masuk ke Panen SawitProNesia untuk diverifikasi Owner/Admin.</p></section>
+      {params.status === "created" ? <div className="activityNotice">Panen berhasil disimpan. Terima kasih, data sudah masuk ke sistem.</div> : null}
+      <section className="pemanenAssignment"><article><small>Kebun Tugas</small><strong>{assignedEstate?.name ?? "Belum ditugaskan"}</strong></article><article><small>Tahun Aktif</small><strong>{context.selectedYear}</strong></article></section>
+      <section className="pemanenEntryCard"><header><span>INPUT LAPANGAN</span><h2>Panen Direct</h2><p>Isi berat TBS dan jumlah janjang. Harga jual diisi kemudian oleh pengelola kebun.</p></header>
+        {assignedEstate && blocks.length ? <form action={createHarvest} className="pemanenForm">
+          <input type="hidden" name="estate_id" value={assignedEstate.id}/><input type="hidden" name="selected_year" value={context.selectedYear}/><input type="hidden" name="source" value="DIRECT"/><input type="hidden" name="plan_id" value=""/><input type="hidden" name="price_per_kg" value="0"/>
+          <label>Blok<select name="block_id" defaultValue={blocks[0]?.id ?? ""} required>{blocks.map(block=><option key={block.id} value={block.id}>{block.name}</option>)}</select></label>
+          <label>Tanggal Panen<input name="harvest_date" type="date" defaultValue={defaultDate} required/></label>
+          <label>Berat TBS (Kg)<input name="weight_kg" type="number" min="0.01" step="0.01" inputMode="decimal" placeholder="Contoh: 1250" required/></label>
+          <label>Jumlah Janjang<input name="bunches" type="number" min="0" step="1" inputMode="numeric" defaultValue="0"/></label>
+          <label className="fullField">Nama Pemanen / Tim<input name="worker" defaultValue={access.email?.split("@")[0] ?? ""} placeholder="Nama pemanen atau tim"/></label>
+          <label className="fullField">Catatan<textarea name="note" rows={3} placeholder="Opsional: kualitas buah, lokasi TPH, nomor tiket timbang..."/></label>
+          <div className="pemanenSafety fullField">Akses Anda hanya untuk <b>menambah Panen DIRECT</b> di {assignedEstate.name}. Edit, hapus, dan modul manajerial tidak tersedia.</div>
+          <button className="primaryButton fullField" type="submit">Simpan Hasil Panen</button>
+        </form> : <div className="emptyState">Akun Pemanen belum memiliki kebun/blok tugas. Hubungi Owner SawitProNesia.</div>}
+      </section>
+      <section className="pemanenEntryCard"><header><span>BUKTI INPUT TERAKHIR</span><h2>Panen yang Anda Catat</h2><p>Hanya transaksi yang dibuat oleh akun Anda sendiri.</p></header><div className="accessMemberList">
+        {receipts.map(row=>{const block=blocks.find(item=>item.id===row.block_id);return <div key={row.id}><i><AppIcon name="harvest"/></i><span><b>{formatNumber(Number(row.weight_kg))} Kg · {block?.name ?? "-"}</b><small>{idDate(row.harvest_date)} · {formatNumber(Number(row.bunches),0)} janjang</small></span><em>TERSIMPAN</em></div>})}
+        {!receipts.length ? <div className="emptyState">Belum ada transaksi yang Anda catat.</div> : null}
+      </div></section>
+    </div>;
+  }
 
   const [estateResult, blockResult, harvestResult, planResult] = await Promise.all([
     supabase.from("estates").select("id,name").order("created_at"),
