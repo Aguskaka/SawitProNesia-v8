@@ -3,24 +3,25 @@ import type { ReactNode } from "react";
 import { logout } from "@/app/(auth)/login/actions";
 import { AppIcon } from "./app-icons";
 import { MobileNavigation } from "./mobile-navigation";
+import { SideNavigation } from "./side-navigation";
 
-const nav = [
-  ["/", "home", "Beranda"], ["/kebun", "estate", "Kebun"], ["/aktivitas", "activity", "Aktivitas"],
-  ["/pupuk", "fertilizer", "Pupuk"], ["/tenaga-kerja", "workforce", "Tenaga Kerja"], ["/panen", "harvest", "Panen"],
-  ["/rencana", "plan", "Rencana"], ["/kalender", "calendar", "Kalender"], ["/anggaran", "budget", "Anggaran"],
-  ["/laporan", "report", "Laporan"], ["/analytics", "analytics", "Analytics"],
-] as const;
+function BrandMark() {
+  return <span className="appBrandMark" aria-hidden="true"><AppIcon name="estate" /></span>;
+}
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   return <div className="appShell premiumShell">
     <aside className="sideRail">
-      <Link className="sideBrand" href="/"><span>🌴</span><div><b>SawitProNesia</b><small>Manajemen Kebun Sawit</small></div></Link>
-      <nav className="sideNav">{nav.map(([href,icon,label])=><Link key={href} href={href}><i><AppIcon name={icon}/></i><span>{label}</span></Link>)}</nav>
-      <div className="sideFoot"><small>SAWIT OPERATIONS OS</small><b>v10.3</b></div>
+      <Link className="sideBrand" href="/"><BrandMark/><div><b>SawitProNesia</b><small>Manajemen Kebun Sawit</small></div></Link>
+      <SideNavigation />
+      <div className="sideFoot"><small>SAWIT OPERATIONS OS</small><b>v10.4</b></div>
     </aside>
     <div className="shellBody">
-      <header className="mobileTopbar"><Link className="mobileBrand" href="/"><span>🌴</span><b>SawitProNesia</b></Link><div><span className="versionPill">v10.3</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar"><AppIcon name="user"/></button></form></div></header>
-      <main className="content premiumContent">{children}</main>
+      <header className="mobileTopbar">
+        <Link className="mobileBrand" href="/"><BrandMark/><b>SawitProNesia</b></Link>
+        <div><span className="versionPill">v10.4</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar" aria-label="Keluar dari SawitProNesia"><AppIcon name="user"/></button></form></div>
+      </header>
+      <main className="content premiumContent" id="main-content">{children}</main>
       <MobileNavigation/>
     </div>
   </div>;

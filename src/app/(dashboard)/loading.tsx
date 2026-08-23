@@ -1,8 +1,15 @@
 export default function DashboardLoading() {
   return (
-    <div className="dashboardLoading">
-      <div className="loadingBar" />
-      <span>Memuat data kebun…</span>
-    </div>
+    <section className="dashboardLoading" aria-live="polite" aria-busy="true">
+      <div className="loadingHero skeletonPulse" />
+      <div className="loadingKpis">
+        {Array.from({ length: 4 }, (_, index) => <div className="loadingCard skeletonPulse" key={index} />)}
+      </div>
+      <div className="loadingPanels">
+        <div className="loadingPanel skeletonPulse" />
+        <div className="loadingPanel skeletonPulse" />
+      </div>
+      <span className="loadingLabel">Memuat data kebun…</span>
+    </section>
   );
 }
