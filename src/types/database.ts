@@ -888,6 +888,10 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: { id: string; email: string; role: string; estate_id: string | null; status: string }[];
       };
+      spn_revoke_member_access: {
+        Args: { p_member_id: string };
+        Returns: string;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

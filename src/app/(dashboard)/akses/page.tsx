@@ -4,7 +4,7 @@ export const revalidate = 0;
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentAccess } from "@/lib/auth/access";
-import { assignMemberAccess } from "@/features/access/actions";
+import { assignMemberAccess, revokeMemberAccess } from "@/features/access/actions";
 import { AppIcon } from "@/components/layout/app-icons";
 
 export default async function AccessPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -30,6 +30,7 @@ export default async function AccessPage({ searchParams }: { searchParams: Promi
     </section>
 
     {params.status === "saved" ? <div className="activityNotice">Akses pengguna berhasil diperbarui.</div> : null}
+    {params.status === "revoked" ? <div className="activityNotice">Akses pengguna berhasil dicabut.</div> : null}
 
     <section className="accessGrid">
       <article className="accessPanel">
@@ -49,7 +50,7 @@ export default async function AccessPage({ searchParams }: { searchParams: Promi
         <div className="accessMemberList">
           {members.map(member=>{
             const estate=estates.find(e=>e.id===member.estate_id);
-            return <div key={member.id}><i>{member.email.slice(0,1).toUpperCase()}</i><span><b>{member.email}</b><small>{estate?.name ?? "Semua Kebun"}</small></span><em>{member.role}</em></div>;
+            return <div key={member.id}><i>{member.email.slice(0,1).toUpperCase()}</i><span><b>{member.email}</b><small>{estate?.name ?? "Semua Kebun"}</small></span><em>{member.role}</em>{member.role !== "owner" ? <form action={revokeMemberAccess}><input type="hidden" name="member_id" value={member.id}/><button className="memberRevokeButton" type="submit" title="Cabut akses pengguna">Cabut</button></form> : null}</div>;
           })}
           {!members.length ? <div className="emptyState">Belum ada anggota workspace yang ditugaskan.</div> : null}
         </div>

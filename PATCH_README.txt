@@ -1,13 +1,9 @@
-SawitProNesia v11.0.1 — TBM Margin Semantics Hotfix
+SawitProNesia v11.1 Production Hardening — PATCH ONLY
 
-PATCH ONLY — copy the contents of this archive to the repository root.
+1. Extract ZIP.
+2. Upload the patch contents to the repository root, preserving folders.
+3. Commit to main and wait for Cloudflare build/deploy.
+4. IMPORTANT: Run supabase/migrations/20260823_v11_1_production_hardening.sql once in Supabase SQL Editor.
+5. Test Owner assign/revoke, Pemanen harvest-only mode, login/logout, and PWA.
 
-Changes:
-1. Home KPI no longer presents a negative operational margin for estates in TBM stage.
-2. TBM margin card now displays "Belum menghasilkan" with current running cost as context.
-3. Once the estate is not TBM, normal margin calculation/display remains unchanged.
-4. Application/version health marker updated to v11.0.1 / 11.0.1.
-
-No Supabase migration.
-No RLS changes.
-No business-data mutation.
+Rollback: retain the current v11.0.1 Cloudflare deployment and take a Supabase backup before applying SQL.

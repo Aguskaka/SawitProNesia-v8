@@ -18,12 +18,12 @@ export function DashboardShell({ children, role }: { children: ReactNode; role: 
     <aside className="sideRail">
       <Link className="sideBrand" href={pemanen ? "/panen" : "/"}><BrandMark/><div><b>SawitProNesia</b><small>{pemanen ? "Mode Pemanen" : "Manajemen Kebun Sawit"}</small></div></Link>
       <SideNavigation role={role} />
-      <div className="sideFoot"><small>{pemanen ? "FIELD HARVEST MODE" : "SAWIT OPERATIONS OS"}</small><b>v11.0.1</b>{!pemanen ? <PwaInstallButton /> : null}<form action={logout}><button className="sideLogout" type="submit">Keluar</button></form></div>
+      <div className="sideFoot"><small>{pemanen ? "FIELD HARVEST MODE" : "SAWIT OPERATIONS OS"}</small><b>v11.1</b>{!pemanen ? <PwaInstallButton /> : null}<form action={logout}><button className="sideLogout" type="submit">Keluar</button></form></div>
     </aside>
     <div className="shellBody">
       <header className="mobileTopbar">
         <Link className="mobileBrand" href={pemanen ? "/panen" : "/"}><BrandMark/><b>SawitProNesia</b></Link>
-        <div>{!pemanen ? <PwaInstallButton compact /> : <span className="rolePill">PEMANEN</span>}<span className="versionPill">v11.0.1</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar" aria-label="Keluar dari SawitProNesia"><AppIcon name="user"/></button></form></div>
+        <div>{!pemanen ? <PwaInstallButton compact /> : <span className="rolePill">PEMANEN</span>}<span className="versionPill">v11.1</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar" aria-label="Keluar dari SawitProNesia"><AppIcon name="user"/></button></form></div>
       </header>
       <main className="content premiumContent" id="main-content">{children}</main>
       <MobileNavigation role={role}/>

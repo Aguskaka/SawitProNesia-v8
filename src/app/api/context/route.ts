@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { appContextCookieNames } from "@/lib/context/server-context";
 
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export async function POST(request: Request) {
   const body = (await request.json()) as {
     selectedYear?: number;
@@ -24,6 +26,9 @@ export async function POST(request: Request) {
 
   if (body.activeEstateId !== undefined) {
     if (body.activeEstateId) {
+      if (!uuidPattern.test(body.activeEstateId)) {
+        return NextResponse.json({ error: "ID kebun tidak valid." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+      }
       cookieStore.set(appContextCookieNames.estate, body.activeEstateId, {
         path: "/",
         sameSite: "lax",
@@ -34,5 +39,5 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
 }

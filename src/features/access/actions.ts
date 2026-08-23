@@ -28,3 +28,18 @@ export async function assignMemberAccess(formData: FormData) {
   revalidatePath("/akses");
   redirect("/akses?status=saved");
 }
+
+export async function revokeMemberAccess(formData: FormData) {
+  const access = await getCurrentAccess();
+  if (!access || access.role !== "owner") throw new Error("Hanya Owner yang dapat mencabut akses pengguna.");
+
+  const memberId = String(formData.get("member_id") ?? "").trim();
+  if (!memberId) throw new Error("ID anggota tidak valid.");
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("spn_revoke_member_access", { p_member_id: memberId });
+  if (error) throw new Error(`Gagal mencabut akses: ${error.message}`);
+
+  revalidatePath("/akses");
+  redirect("/akses?status=revoked");
+}
