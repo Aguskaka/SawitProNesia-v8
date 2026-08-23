@@ -280,3 +280,12 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{overflow-x:hidden
  .quickMenuSheet{max-height:min(82vh,680px);overflow:auto}.quickMenuGrid a{min-height:64px}.quickMenuSheet header button{min-width:40px;min-height:40px}
 }
 @media(max-width:380px){.mobileBrand b{font-size:12px}.versionPill{font-size:8px}.premiumContent{padding-left:8px;padding-right:8px}.mobileBottomNav{grid-template-columns:1fr 1fr 62px 1fr 1fr}.mobileBottomNav .mobileFab{width:52px;height:52px}.quickMenuGrid{grid-template-columns:1fr}}
+
+/* v10.5 — PWA & App Experience */
+.pwaInstallButton{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:inherit;border-radius:12px;min-height:38px;padding:8px 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font:inherit;font-weight:800;cursor:pointer;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.pwaInstallButton:hover{transform:translateY(-1px);background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24)}
+.pwaInstallButton.compact{min-height:34px;padding:6px 9px;border-color:#d8e8d8;background:#f0f7ef;color:#116b36;font-size:11px}
+.mobileTopbar>div{display:flex;align-items:center;gap:8px}
+.sideFoot .pwaInstallButton{width:100%;margin-top:10px;color:#eaf6eb}
+@media (max-width:760px){.pwaInstallButton.compact span:last-child{display:none}.pwaInstallButton.compact{width:34px;padding:0}.premiumContent{padding-bottom:calc(92px + env(safe-area-inset-bottom))}.mobileTopbar{padding-top:max(10px,env(safe-area-inset-top));padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}}
+@media (display-mode:standalone){html,body{overscroll-behavior-y:none}.mobileTopbar{padding-top:max(12px,env(safe-area-inset-top))}.premiumContent{min-height:100dvh}.sideRail{padding-top:env(safe-area-inset-top)}.versionPill::after{content:" · App";font-size:.72em;opacity:.72}}
