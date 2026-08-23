@@ -13,5 +13,5 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   if (!user) redirect("/login");
 
   const access = await getCurrentAccess();
-  return <DashboardShell role={access?.role ?? "viewer"}>{children}</DashboardShell>;
+  return <DashboardShell role={access?.role ?? "viewer"} email={user.email}>{children}</DashboardShell>;
 }

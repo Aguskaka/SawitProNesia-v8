@@ -11,19 +11,27 @@ function BrandMark() {
   return <span className="appBrandMark" aria-hidden="true"><AppIcon name="estate" /></span>;
 }
 
-export function DashboardShell({ children, role }: { children: ReactNode; role: string }) {
+function roleLabel(role: string) {
+  if (role === "owner") return "Owner";
+  if (role === "admin") return "Admin";
+  if (role === "mandor") return "Mandor";
+  if (role === "pemanen") return "Pemanen";
+  return "Viewer";
+}
+
+export function DashboardShell({ children, role, email }: { children: ReactNode; role: string; email?: string | null }) {
   const pemanen = role === "pemanen";
   return <div className={`appShell premiumShell ${pemanen ? "pemanenShell" : ""}`}>
     <RoleRouteGuard role={role} />
     <aside className="sideRail">
       <Link className="sideBrand" href={pemanen ? "/panen" : "/"}><BrandMark/><div><b>SawitProNesia</b><small>{pemanen ? "Mode Pemanen" : "Manajemen Kebun Sawit"}</small></div></Link>
       <SideNavigation role={role} />
-      <div className="sideFoot"><small>{pemanen ? "FIELD HARVEST MODE" : "SAWIT OPERATIONS OS"}</small><b>v11.1</b>{!pemanen ? <PwaInstallButton /> : null}<form action={logout}><button className="sideLogout" type="submit">Keluar</button></form></div>
+      <div className="sideFoot"><small>{pemanen ? "FIELD HARVEST MODE" : "SAWIT OPERATIONS OS"}</small><b>v11.1.1</b>{!pemanen ? <PwaInstallButton /> : null}<form action={logout}><button className="sideLogout" type="submit">Keluar</button></form></div>
     </aside>
     <div className="shellBody">
       <header className="mobileTopbar">
         <Link className="mobileBrand" href={pemanen ? "/panen" : "/"}><BrandMark/><b>SawitProNesia</b></Link>
-        <div>{!pemanen ? <PwaInstallButton compact /> : <span className="rolePill">PEMANEN</span>}<span className="versionPill">v11.1</span><form action={logout}><button className="mobileAccount" type="submit" title="Keluar" aria-label="Keluar dari SawitProNesia"><AppIcon name="user"/></button></form></div>
+        <div className="topbarActions">{!pemanen ? <PwaInstallButton compact /> : <span className="rolePill">PEMANEN</span>}<span className="versionPill">v11.1.1</span><details className="accountMenu"><summary className="mobileAccount" title="Profil" aria-label="Buka menu profil"><AppIcon name="user"/></summary><div className="accountMenuPanel"><div className="accountMenuHead"><span className="accountAvatar"><AppIcon name="user"/></span><div><b>{email || "Akun SawitProNesia"}</b><small>{roleLabel(role)}</small></div></div><div className="accountMenuMeta"><span>Role</span><b>{roleLabel(role)}</b></div>{role === "owner" ? <Link className="accountMenuLink" href="/akses"><AppIcon name="user"/><span><b>Akses Pengguna</b><small>Kelola role & kebun tugas</small></span></Link> : null}<div className="accountMenuVersion"><span>Versi aplikasi</span><b>v11.1.1</b></div><form action={logout}><button className="accountLogout" type="submit">Keluar</button></form></div></details></div>
       </header>
       <main className="content premiumContent" id="main-content">{children}</main>
       <MobileNavigation role={role}/>

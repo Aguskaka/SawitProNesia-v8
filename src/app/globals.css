@@ -321,3 +321,20 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{overflow-x:hidden
 .memberRevokeButton{border:1px solid #f1c8c0;background:#fff7f5;color:#a33a2a;border-radius:10px;padding:7px 10px;font-size:12px;font-weight:800;cursor:pointer}
 .memberRevokeButton:hover{background:#fff0ec}
 .accessMemberList>div>form{margin-left:auto}
+
+/* v11.1.1 — role-aware profile menu (mobile + desktop) */
+.topbarActions{display:flex;align-items:center;gap:8px}
+.accountMenu{position:relative}
+.accountMenu>summary{list-style:none}
+.accountMenu>summary::-webkit-details-marker{display:none}
+.accountMenu[open]>.mobileAccount{background:#dfeee3;color:#155d30}
+.accountMenuPanel{position:absolute;right:0;top:calc(100% + 10px);z-index:160;width:min(310px,calc(100vw - 24px));padding:12px;background:#fff;border:1px solid #dfe8dc;border-radius:16px;box-shadow:0 18px 46px rgba(19,57,31,.2);display:grid;gap:9px}
+.accountMenuPanel:before{content:"";position:absolute;right:12px;top:-6px;width:11px;height:11px;background:#fff;border-left:1px solid #dfe8dc;border-top:1px solid #dfe8dc;transform:rotate(45deg)}
+.accountMenuHead{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center;padding:2px 2px 9px;border-bottom:1px solid #edf2eb;min-width:0}
+.accountAvatar{width:38px;height:38px;border-radius:12px;background:#eaf5ec;color:#176d38;display:grid;place-items:center}
+.accountAvatar svg{width:18px;height:18px}
+.accountMenuHead div{min-width:0}.accountMenuHead b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.accountMenuHead small{display:block;margin-top:2px;font-size:9px;color:#76857a;font-weight:800}
+.accountMenuMeta,.accountMenuVersion{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 9px;border-radius:10px;background:#f5f8f3;font-size:9px}.accountMenuMeta span,.accountMenuVersion span{color:#718078}.accountMenuMeta b,.accountMenuVersion b{color:#175a2c}
+.accountMenuLink{display:grid;grid-template-columns:32px 1fr;gap:9px;align-items:center;padding:9px;border:1px solid #e3ebe0;border-radius:11px;background:#fbfdfb;color:#155d30}.accountMenuLink>svg{width:17px;height:17px;margin:auto}.accountMenuLink b{display:block;font-size:10px}.accountMenuLink small{display:block;margin-top:2px;font-size:8px;color:#7b8980}
+.accountLogout{width:100%;border:0;border-radius:11px;padding:10px 12px;background:#174d2a;color:#fff;font-weight:900;font-size:10px;cursor:pointer}.accountLogout:hover{background:#0f6330}
+@media(max-width:640px){.accountMenuPanel{position:fixed;right:12px;top:calc(62px + env(safe-area-inset-top));width:calc(100vw - 24px);max-width:340px}.accountMenuPanel:before{right:13px}.mobileTopbar{z-index:140}.mobileAccount{display:grid;place-items:center;border:0;cursor:pointer}}

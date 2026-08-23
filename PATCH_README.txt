@@ -1,9 +1,18 @@
-SawitProNesia v11.1 Production Hardening — PATCH ONLY
+SawitProNesia v11.1.1 — Profile Menu Hotfix (PATCH-only)
 
-1. Extract ZIP.
-2. Upload the patch contents to the repository root, preserving folders.
-3. Commit to main and wait for Cloudflare build/deploy.
-4. IMPORTANT: Run supabase/migrations/20260823_v11_1_production_hardening.sql once in Supabase SQL Editor.
-5. Test Owner assign/revoke, Pemanen harvest-only mode, login/logout, and PWA.
+Tujuan:
+- Menambahkan menu Profile dari ikon kanan atas untuk mobile dan desktop.
+- Owner melihat menu Akses Pengguna dari Profile.
+- Role non-Owner tidak melihat Akses Pengguna.
+- Menampilkan email, role, versi aplikasi, dan tombol Keluar.
+- Bottom navigation tetap bersih.
 
-Rollback: retain the current v11.0.1 Cloudflare deployment and take a Supabase backup before applying SQL.
+Tidak ada perubahan database / RLS / SQL migration.
+Migration v11.1 yang sudah diterapkan tidak perlu dijalankan ulang.
+
+File berubah:
+- src/components/layout/dashboard-shell.tsx
+- src/app/(dashboard)/layout.tsx
+- src/app/globals.css
+- src/app/api/health/route.ts
+- package.json
