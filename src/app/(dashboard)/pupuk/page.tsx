@@ -147,17 +147,17 @@ export default async function FertilizerPage({
             <div className="v1062FertilizerChooser">
               <div><span>ACUAN PUPUK CUACA</span><strong>{selectedWeatherFertilizer === "ALL" ? "Semua pupuk dalam program" : selectedWeatherFertilizer}</strong><small>Skor dihitung ulang untuk karakter masing-masing pupuk menggunakan forecast cuaca yang sama.</small></div>
               <nav aria-label="Pilih acuan pupuk untuk rekomendasi cuaca">
-                <Link className={selectedWeatherFertilizer === "ALL" ? "active" : ""} href="/pupuk#weather-window">Semua Pupuk</Link>
-                {weather.fertilizers.map((item) => <Link className={selectedWeatherFertilizer === item.fertilizer ? "active" : ""} href={`/pupuk?weatherFertilizer=${encodeURIComponent(item.fertilizer)}#weather-window`} key={item.fertilizer}>{item.fertilizer}</Link>)}
+                <a className={selectedWeatherFertilizer === "ALL" ? "active" : ""} href="/pupuk#weather-window">Semua Pupuk</a>
+                {weather.fertilizers.map((item) => <a className={selectedWeatherFertilizer === item.fertilizer ? "active" : ""} href={`/pupuk?weatherFertilizer=${encodeURIComponent(item.fertilizer)}#weather-window`} key={item.fertilizer}>{item.fertilizer}</a>)}
               </nav>
             </div>
 
             {selectedWeatherFertilizer === "ALL" ? <div className="v1062FertilizerMatrix">
-              {weather.fertilizers.map((item) => <Link href={`/pupuk?weatherFertilizer=${encodeURIComponent(item.fertilizer)}#weather-window`} className={`v1062FertilizerCard ${item.today.status.toLowerCase()}`} key={item.fertilizer}>
+              {weather.fertilizers.map((item) => <a href={`/pupuk?weatherFertilizer=${encodeURIComponent(item.fertilizer)}#weather-window`} className={`v1062FertilizerCard ${item.today.status.toLowerCase()}`} key={item.fertilizer}>
                 <div><small>{item.fertilizerGroup}</small><strong>{item.fertilizer}</strong></div>
                 <b>{item.today.status}</b><em>{item.today.score}/100</em>
                 <span>Terbaik: {idDate(item.bestDay.date)} · {item.bestDay.bestWindow.label} · {item.bestDay.score}/100</span>
-              </Link>)}
+              </a>)}
             </div> : null}
 
             <div className="v106TodayGrid">
