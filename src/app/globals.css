@@ -338,3 +338,26 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{overflow-x:hidden
 .accountMenuLink{display:grid;grid-template-columns:32px 1fr;gap:9px;align-items:center;padding:9px;border:1px solid #e3ebe0;border-radius:11px;background:#fbfdfb;color:#155d30}.accountMenuLink>svg{width:17px;height:17px;margin:auto}.accountMenuLink b{display:block;font-size:10px}.accountMenuLink small{display:block;margin-top:2px;font-size:8px;color:#7b8980}
 .accountLogout{width:100%;border:0;border-radius:11px;padding:10px 12px;background:#174d2a;color:#fff;font-weight:900;font-size:10px;cursor:pointer}.accountLogout:hover{background:#0f6330}
 @media(max-width:640px){.accountMenuPanel{position:fixed;right:12px;top:calc(62px + env(safe-area-inset-top));width:calc(100vw - 24px);max-width:340px}.accountMenuPanel:before{right:13px}.mobileTopbar{z-index:140}.mobileAccount{display:grid;place-items:center;border:0;cursor:pointer}}
+
+/* v11.1.3 — PATCH-only Mobile Overflow Hardfix */
+@media(max-width:640px){
+  .v931Hero,.v97FertDetailPage,.v97ExecutionPanel,.fertExecuteForm{min-width:0;max-width:100%;overflow-x:clip}
+  .v931Hero .heroContext{display:grid;grid-template-columns:minmax(0,1fr) minmax(112px,112px);gap:7px;width:100%;max-width:100%}
+  .v931Hero .heroContext label{min-width:0;max-width:100%;overflow:hidden}
+  .v931Hero .heroContext .estateSelector select,.v931Hero .heroContext .yearSelector select{display:block;width:100%;max-width:100%;min-width:0!important;padding-left:10px;padding-right:30px;text-overflow:ellipsis}
+  .v931Hero .heroContext .yearSelector{width:112px;min-width:112px;overflow:visible}
+  .v931Hero .heroContext .yearSelector select{width:112px;min-width:112px!important;font-variant-numeric:tabular-nums;text-overflow:clip}
+
+  .v97ExecutionPanel{padding-left:13px;padding-right:13px}
+  .fertExecuteForm{grid-template-columns:minmax(0,1fr)!important;width:100%}
+  .fertExecuteForm>*{min-width:0;max-width:100%}
+  .fertExecuteForm .fullField{grid-column:1!important;width:100%;min-width:0;max-width:100%}
+  .fertExecutionRow.v97ExecutionRow{display:grid;grid-template-columns:minmax(0,1fr)!important;width:100%;min-width:0;max-width:100%;gap:7px;padding:9px}
+  .fertExecutionRow.v97ExecutionRow>b,.fertExecutionRow.v97ExecutionRow>input{grid-column:1!important;width:100%!important;min-width:0!important;max-width:100%!important}
+  .fertExecuteForm textarea{display:block;width:100%!important;min-width:0!important;max-width:100%!important;resize:vertical}
+  .v97ExecuteButton{display:block;width:100%!important;min-width:0!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;white-space:normal}
+}
+@media(max-width:360px){
+  .v931Hero .heroContext{grid-template-columns:minmax(0,1fr) 108px}
+  .v931Hero .heroContext .yearSelector,.v931Hero .heroContext .yearSelector select{width:108px;min-width:108px!important}
+}
