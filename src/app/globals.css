@@ -361,3 +361,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{overflow-x:hidden
   .v931Hero .heroContext{grid-template-columns:minmax(0,1fr) 108px}
   .v931Hero .heroContext .yearSelector,.v931Hero .heroContext .yearSelector select{width:108px;min-width:108px!important}
 }
+
+/* v11.2 — Fertilizer Weather Score v2.0 */
+.v106ForecastMeta{align-items:stretch}.v106ForecastMeta em{display:grid;gap:1px;min-width:0}.v106ForecastMeta em small{display:block;font-size:5px;font-weight:900;letter-spacing:.04em;color:#93a097;text-transform:uppercase}.v112ForecastWindow{margin-top:6px;padding-top:6px;border-top:1px solid #edf1eb}.v112ForecastWindow small,.v112ForecastWindow b{display:block}.v112ForecastWindow small{font-size:5px;font-weight:900;letter-spacing:.06em;color:#98a29b;text-transform:uppercase}.v112ForecastWindow b{margin-top:2px;font-size:7px;color:#315c3d}.v106WeatherContext p b{color:#315c3d}.v106BestWindow>div small:not(:first-child){margin-top:7px}.v106DecisionMetrics b{overflow-wrap:anywhere}
+@media(max-width:700px){.v106ForecastMeta{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.v106ForecastMeta em{padding:4px 3px}.v106DecisionMetrics small{line-height:1.25}.v106DecisionMetrics b{font-size:9px}}

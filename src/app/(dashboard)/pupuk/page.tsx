@@ -134,7 +134,7 @@ export default async function FertilizerPage({
 
       <section className="v106WeatherPanel" id="weather-window">
         <div className="v106WeatherHead">
-          <div className="v106WeatherTitle"><i><AppIcon name="weather"/></i><div><span>HYBRID WEATHER & FERTILIZER DECISION ENGINE</span><h2>Rekomendasi Pemupukan Berbasis Lokasi</h2><p>Open-Meteo menilai jendela agronomis 7 hari, sementara BMKG Nowcast menjadi safety override bila titik kebun masuk area peringatan dini aktif.</p></div></div>
+          <div className="v106WeatherTitle"><i><AppIcon name="weather"/></i><div><span>HYBRID WEATHER & FERTILIZER DECISION ENGINE</span><h2>Rekomendasi Pemupukan Berbasis Lokasi</h2><p>Weather Score v2 membuktikan kesiapan tanah terlebih dahulu, lalu menilai keamanan jendela aplikasi per jam. BMKG Nowcast tetap menjadi safety override bila titik kebun masuk area peringatan dini aktif.</p></div></div>
           <div className="v106LocationChip"><small>KOORDINAT KEBUN</small><strong>{hasCoordinates ? `${Number(estate?.latitude).toFixed(5)}, ${Number(estate?.longitude).toFixed(5)}` : "Belum tersedia"}</strong><span>{estate?.name ?? "Kebun aktif"}</span></div>
         </div>
 
@@ -156,7 +156,7 @@ export default async function FertilizerPage({
               {weather.fertilizers.map((item) => <Link href={`/pupuk?weatherFertilizer=${encodeURIComponent(item.fertilizer)}#weather-window`} className={`v1062FertilizerCard ${item.today.status.toLowerCase()}`} key={item.fertilizer}>
                 <div><small>{item.fertilizerGroup}</small><strong>{item.fertilizer}</strong></div>
                 <b>{item.today.status}</b><em>{item.today.score}/100</em>
-                <span>Terbaik: {idDate(item.bestDay.date)} · {item.bestDay.score}/100</span>
+                <span>Terbaik: {idDate(item.bestDay.date)} · {item.bestDay.bestWindow.label} · {item.bestDay.score}/100</span>
               </Link>)}
             </div> : null}
 
@@ -165,17 +165,17 @@ export default async function FertilizerPage({
                 <div className="v106DecisionTop"><span>{selectedWeatherFertilizer === "ALL" ? "REKOMENDASI HARI INI · SEMUA PUPUK" : `REKOMENDASI HARI INI · ${detailForecast.fertilizer}`}</span><b>{selectedForecast?.today.status ?? weather.overallToday.status}</b></div>
                 <strong>{(selectedForecast?.today.status ?? weather.overallToday.status) === "Layak" ? "Pemupukan dapat diprioritaskan" : (selectedForecast?.today.status ?? weather.overallToday.status) === "Waspada" ? "Bisa dilakukan dengan pengawasan cuaca" : "Sebaiknya tunda pemupukan"}</strong>
                 <p>{selectedWeatherFertilizer === "ALL" ? `Status mengikuti pupuk paling sensitif hari ini: ${weather.overallToday.restrictiveFertilizer}. ${weather.overallToday.reasons.slice(0,2).join(" ")}` : detailToday.reasons.slice(0,2).join(" ")}</p>
-                <div className="v106DecisionMetrics"><span><small>SKOR</small><b>{selectedForecast?.today.score ?? weather.overallToday.score}/100</b></span><span><small>HUJAN</small><b>{formatNumber(Math.max(detailToday.rainMm, detailToday.precipitationMm),1)} mm</b></span><span><small>6 JAM</small><b>{formatNumber(detailToday.next6hPrecipitationMm,1)} mm</b></span><span><small>SUHU</small><b>{formatNumber(detailToday.temperatureMax,0)}°C</b></span></div>
+                <div className="v106DecisionMetrics"><span><small>SKOR</small><b>{selectedForecast?.today.score ?? weather.overallToday.score}/100</b></span><span><small>KESIAPAN TANAH</small><b>{selectedForecast?.today.breakdown.readiness ?? weather.overallToday.readiness}/50</b></span><span><small>KEAMANAN APLIKASI</small><b>{selectedForecast?.today.breakdown.applicationSafety ?? weather.overallToday.applicationSafety}/40</b></span><span><small>CONFIDENCE</small><b>{selectedForecast?.today.confidenceLabel ?? weather.overallToday.confidenceLabel} · {selectedForecast?.today.confidenceScore ?? weather.overallToday.confidenceScore}%</b></span></div>
               </article>
               <article className="v106BestWindow">
                 <span>{selectedWeatherFertilizer === "ALL" ? "JENDELA TERBAIK BERSAMA 7 HARI" : "JENDELA TERBAIK 7 HARI"}</span>
                 <strong>{idDate(selectedForecast ? selectedForecast.bestDay.date : weather.commonBestDay.date)}</strong>
                 <b>{selectedForecast ? `${selectedForecast.bestDay.status} · Skor ${selectedForecast.bestDay.score}/100` : `${weather.commonBestDay.status} · Skor minimum ${weather.commonBestDay.score}/100`}</b>
                 <p>{selectedForecast ? selectedForecast.bestDay.reasons[0] : `Hari terbaik bila seluruh pupuk dipertimbangkan bersama. Pupuk pembatas: ${weather.commonBestDay.restrictiveFertilizer}; skor rata-rata ${weather.commonBestDay.averageScore}/100.`}</p>
-                <div><small>ACUAN PUPUK</small><em>{selectedForecast ? selectedForecast.fertilizer : `${weather.fertilizers.length} jenis pupuk program`}</em></div>
+                <div><small>WAKTU APLIKASI TERBAIK</small><em>{selectedForecast ? selectedForecast.bestDay.bestWindow.label : weather.commonBestDay.bestWindowLabel}</em><small>ACUAN PUPUK</small><em>{selectedForecast ? selectedForecast.fertilizer : `${weather.fertilizers.length} jenis pupuk program`}</em></div>
               </article>
               <article className="v106WeatherContext">
-                <span>KONTEKS AGRONOMI</span><strong>{weatherCodeLabel(detailToday.weatherCode)}</strong><p>Hujan kemarin {formatNumber(weather.previousDayRainMm,1)} mm · RH rata-rata {formatNumber(detailToday.humidityMean,0)}% · gust {formatNumber(detailToday.windGustMax,0)} km/jam · ET₀ {formatNumber(detailToday.et0Mm,1)} mm. {detailToday.soilMoistureTopMean !== null ? `Kelembapan tanah atas ${formatNumber(detailToday.soilMoistureTopMean,2)} m³/m³. ` : ""}{selectedWeatherFertilizer === "ALL" ? "Setiap pupuk mendapat penalti/bonus berbeda; Urea lebih sensitif terhadap panas dan tanah kering, sedangkan NPK/KCl lebih sensitif terhadap runoff/pencucian." : detailForecast.fertilizerGroup === "UREA" ? "Urea lebih sensitif terhadap kondisi panas/kering dan hujan lebat." : detailForecast.fertilizerGroup === "DOLOMIT" ? "Dolomit diprioritaskan pada jendela yang relatif lebih kering." : "NPK/KCl diprioritaskan saat risiko runoff dan pencucian rendah."}</p><small>Sumber: Open-Meteo 7 hari + BMKG Nowcast · {weather.bmkg.checked ? (weather.bmkg.activeWarning ? "peringatan BMKG aktif" : "tidak ada warning BMKG pada titik kebun") : "BMKG sementara tidak dapat diverifikasi"}</small>
+                <span>KONTEKS AGRONOMI · WEATHER SCORE v2</span><strong>{weatherCodeLabel(detailToday.weatherCode)}</strong><p>Hujan 10 hari {formatNumber(detailToday.rollingRain10dMm,1)} mm · 30 hari {formatNumber(detailToday.rollingRain30dMm,1)} mm · kelembapan profil tanah model <b>{detailToday.soilMoistureLabel}</b>{detailToday.soilMoistureRelative !== null ? ` (${detailToday.soilMoistureRelative} persentil lokal)` : ""}. Jendela terbaik {detailToday.bestWindow.label}: hujan {formatNumber(detailToday.bestWindow.precipitationMm,1)} mm · peluang hujan maks {formatNumber(detailToday.bestWindow.precipitationProbabilityMax,0)}% · suhu rata-rata {formatNumber(detailToday.bestWindow.temperatureMean,0)}°C · gust {formatNumber(detailToday.bestWindow.windGustMax,0)} km/jam. ET₀ {formatNumber(detailToday.et0Mm,1)} mm.</p><small>Sumber: Open-Meteo histori 30 hari + forecast hourly 7 hari + BMKG Nowcast · Confidence {detailToday.confidenceLabel} {detailToday.confidenceScore}% · {weather.bmkg.checked ? (weather.bmkg.activeWarning ? "peringatan BMKG aktif" : "tidak ada warning BMKG pada titik kebun") : "BMKG sementara tidak dapat diverifikasi"}</small>
               </article>
             </div>
             <div className="v106ForecastStrip">
@@ -183,11 +183,11 @@ export default async function FertilizerPage({
                 <div><small>{index===0 ? "HARI INI" : new Intl.DateTimeFormat("id-ID",{weekday:"short"}).format(new Date(`${day.date}T00:00:00`))}</small><strong>{new Intl.DateTimeFormat("id-ID",{day:"2-digit",month:"short"}).format(new Date(`${day.date}T00:00:00`))}</strong></div>
                 <i><AppIcon name="weather"/></i>
                 <b>{day.status}</b><span>Skor {day.score}</span>
-                <div className="v106ForecastMeta"><em>{formatNumber(Math.max(day.rainMm,day.precipitationMm),1)} mm</em><em>{formatNumber(day.precipitationProbability,0)}%</em><em>{formatNumber(day.temperatureMax,0)}°C</em></div>
+                <div className="v106ForecastMeta"><em><small>Hujan</small>{formatNumber(Math.max(day.rainMm,day.precipitationMm),1)} mm</em><em><small>Peluang</small>{formatNumber(day.precipitationProbability,0)}%</em><em><small>Maks</small>{formatNumber(day.temperatureMax,0)}°C</em></div><div className="v112ForecastWindow"><small>Window</small><b>{day.bestWindow.label}</b></div>
               </article>)}
             </div>
             {weather.bmkg.activeWarning ? <div className="v106BmkgAlert"><b>BMKG SAFETY OVERRIDE — TUNDA</b><span>{weather.bmkg.headline ?? weather.bmkg.event ?? "Peringatan dini cuaca aktif pada titik kebun."} {weather.bmkg.expires ? `Berlaku hingga ${new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(new Date(weather.bmkg.expires))}.` : ""}</span></div> : null}
-            <div className="v106WeatherNote"><b>Catatan keputusan:</b><span>Mode Semua Pupuk memakai prinsip konservatif: status harian mengikuti skor terendah dari seluruh pupuk program. Pilih satu pupuk untuk melihat rekomendasi spesifik. Hard-stop BMKG dan risiko cuaca ekstrem tetap berlaku untuk seluruh jenis pupuk.</span></div>
+            <div className="v106WeatherNote"><b>Catatan keputusan:</b><span>Weather Score v2 memakai Readiness Gate: tanah harus mencapai minimal 25/50 sebelum status Layak dimungkinkan. Mode Semua Pupuk tetap konservatif dan mengikuti pupuk paling membatasi. Hard-stop BMKG, hujan ekstrem pada window, angin ekstrem, serta hujan 30 hari &lt;60 mm atau &gt;300 mm mengubah keputusan menjadi Tunda.</span></div>
           </>
         ) : null}
       </section>
